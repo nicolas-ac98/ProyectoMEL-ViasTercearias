@@ -139,4 +139,12 @@ model1 <- lm(formula= TIME_DEVIATION ~ ., data=datos_vr_scaled[datos_vr_scaled$T
 summary(model1)
 ```
 
+```{r}
+head(datos_vr)
+
+```
+
+```{r}
+levels(datos_vr)
+```
 
