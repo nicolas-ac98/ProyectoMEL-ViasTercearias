@@ -1,0 +1,142 @@
+---
+title: "Modelos lineales Proyecto vías rurales"
+author: "Juan David Sanchez, Nicolas Arrieta, Jairo Andrés Moreno"
+date: "2025-04-12"
+output: html_document
+---
+## Carga de datos
+Aqui se carga el conjunto datos
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+datos_vr <- read.csv("../data/collected_vias_rurales_ve_data_v5.csv")
+summary(datos_vr)
+```
+```{r}
+cols <- c('COST_DEVIATION','CONTRACT_VALUE_LOGNORM',
+          'ORIGINAL_DEADLINE','AWARD_GROWTH','PROJECT_INTENSITY_NORM',
+          'TOTAL_CONTRACTS_OBRAS_ENTITY','PROPORTION_DEVIATION_ENTITY_ALL_TIME',
+          'PROPORTION_COST_DEVIATION_ENTITY_ALL_TIME', 'PROPORTION_TIME_DEVIATION_ENTITY_ALL_TIME',
+          'PROJECT_INTENSITY_NORM_ENTITY_ALL_TIME',
+          'AWARD_GROWTH_ORIG_ENTITY_ALL_TIME','TOTAL_CONTRACTS_OBRAS_CONT',
+          'PROPORTION_DEVIATION_CONT_ALL_TIME','PROPORTION_COST_DEVIATION_CONT_ALL_TIME',
+          'PROPORTION_TIME_DEVIATION_CONT_ALL_TIME',
+          'PROJECT_INTENSITY_NORM_CONT_ALL_TIME', 'AWARD_GROWTH_ORIG_CONT_ALL_TIME',
+          'ECONOMIC_IMPORTANCE', 'OPEN_TRANSPARENCE_GOBERMENT',
+          'TRANSPORT_INVESTMENT', 'FISCAL_DESEMPENO')
+
+correlation_matrix <- cor(datos_vr[, cols])
+```
+
+
+```{r}
+library(ggplot2)
+
+# Crear scatter plot
+ggplot(datos_vr[  datos_vr$COST_DEVIATION > 0,], aes(x = COST_DEVIATION*100)) +
+# ggplot(datos_vr, aes(x = PROPORTION_DEVIATION_CONT_ALL_TIME)) +
+# ggplot(datos_vr, aes(x = log(PROJECT_INTENSITY_NORM_ENTITY_ALL_TIME + 1))) +
+  geom_histogram(color = "black", size = 1) +  # Puntos
+    labs(title = "Desviación en costo en contratos de vías tercearias",
+       x = "Desviación en costo (%)",
+       y = "Freceuncia") +
+  theme_minimal()  # Tema limpio
+```
+
+```{r}
+datos_vr$PROJECT_INTENSITY_LOGNORM <- log(datos_vr$PROJECT_INTENSITY_NORM)
+datos_vr$TOTAL_CONTRACTS_OBRAS_ENTITY_LOG <- log(datos_vr$TOTAL_CONTRACTS_OBRAS_ENTITY + 1)
+datos_vr$ECONOMIC_IMPORTANCE_LOG <- log(datos_vr$ECONOMIC_IMPORTANCE)
+datos_vr$TRANSPORT_INVESTMENT_LOG <- log(datos_vr$TRANSPORT_INVESTMENT)
+```
+
+
+```{r}
+cols_model_num <- c('ORIGINAL_DEADLINE','AWARD_GROWTH','PROJECT_INTENSITY_LOGNORM',
+          'TOTAL_CONTRACTS_OBRAS_ENTITY_LOG','PROPORTION_DEVIATION_ENTITY_ALL_TIME',
+          'PROJECT_INTENSITY_NORM_ENTITY_ALL_TIME',
+          'AWARD_GROWTH_ORIG_ENTITY_ALL_TIME','TOTAL_CONTRACTS_OBRAS_CONT',
+          'PROPORTION_DEVIATION_CONT_ALL_TIME',
+          'PROJECT_INTENSITY_NORM_CONT_ALL_TIME', 'AWARD_GROWTH_ORIG_CONT_ALL_TIME',
+          'ECONOMIC_IMPORTANCE_LOG', 'OPEN_TRANSPARENCE_GOBERMENT',
+          'TRANSPORT_INVESTMENT_LOG',
+          'FISCAL_DESEMPENO')
+
+correlation_matrix <- cor(datos_vr[, cols_model_num])
+
+# Escalar todas las columnas numéricas
+datos_vr_scaled <- as.data.frame(scale(datos_vr[,cols_model_num]))
+
+```
+
+```{r}
+cols_cat <- c('OWNER','PRESIDENTIAL_PERIOD','REGIONAL_PERIOD','QUARTER')
+
+datos_vr_scaled$IS_DEPARTMENT_GOVERNMENT <- ifelse(datos_vr$OWNER == 'DEPARTMENT_GOVERNMENT', 1, 0)
+datos_vr_scaled$IS_PRESIDENTIAL_PERIOD <- ifelse(datos_vr$PRESIDENTIAL_PERIOD == 'True', 1, 0)
+datos_vr_scaled$IS_REGIONAL_PERIOD <- ifelse(datos_vr$REGIONAL_PERIOD == 'True', 1, 0)
+datos_vr_scaled$Q1 <- ifelse(datos_vr$QUARTER == 1, 1, 0)
+datos_vr_scaled$Q2 <- ifelse(datos_vr$QUARTER == 2, 1, 0)
+datos_vr_scaled$Q3 <- ifelse(datos_vr$QUARTER == 3, 1, 0)
+datos_vr_scaled$Q4 <- ifelse(datos_vr$QUARTER == 4, 1, 0)
+
+datos_vr_scaled$LP <- ifelse(datos_vr$PROCESS_TYPE == 'LICITACION PUBLICA', 1, 0)
+
+dummy_var <- c('IS_DEPARTMENT_GOVERNMENT','IS_PRESIDENTIAL_PERIOD','IS_REGIONAL_PERIOD',
+               'Q1','Q2','Q3','LP'
+               )
+```
+
+## Modelo cost deviation
+
+```{r}
+lm_variables <- c(cols_model_num,dummy_var)
+y_variable <- 'COST_DEVIATION'
+
+total_variables <- c(c(y_variable),lm_variables)
+
+
+datos_vr_scaled$COST_DEVIATION <- datos_vr$COST_DEVIATION
+```
+
+```{r}
+model1 <- lm(formula= COST_DEVIATION ~ ., data=datos_vr_scaled[,total_variables])
+summary(model1)
+```
+
+```{r}
+# Crear dataframe con residuos
+datos_vr$residuos <- residuals(model1)
+datos_vr$ajustados <- fitted(model1)
+
+# Graficar
+ggplot(datos_vr, aes(x = ajustados, y = residuos)) +
+  geom_point(color = "blue") +  # Puntos
+  geom_hline(yintercept = 0, color = "red", linetype = "dashed") +  # Línea en 0
+  labs(title = "Gráfico de Residuales",
+       x = "Valores Ajustados",
+       y = "Residuales") +
+  theme_minimal()
+```
+
+## Modelo time deviation
+
+```{r}
+lm_variables <- c(cols_model_num,dummy_var)
+y_variable <- 'TIME_DEVIATION'
+
+total_variables <- c(c(y_variable),lm_variables)
+
+
+datos_vr_scaled$TIME_DEVIATION <- datos_vr$TIME_DEVIATION
+```
+
+```{r}
+model1 <- lm(formula= TIME_DEVIATION ~ ., data=datos_vr_scaled[datos_vr_scaled$TIME_DEVIATION < 3,total_variables])
+summary(model1)
+```
+
+
