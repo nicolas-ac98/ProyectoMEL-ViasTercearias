@@ -1,0 +1,1028 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Modelos lineales Proyecto vías rurales},
+  pdfauthor={Juan David Sanchez, Nicolas Arrieta, Jairo Andrés Moreno},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Modelos lineales Proyecto vías rurales}
+\author{Juan David Sanchez, Nicolas Arrieta, Jairo Andrés Moreno}
+\date{2025-04-12}
+
+\begin{document}
+\maketitle
+
+\subsection{Carga de datos}\label{carga-de-datos}
+
+Aqui se carga el conjunto datos
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{datos\_vr }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"../data/collected\_vias\_rurales\_ve\_data\_v5.csv"}\NormalTok{)}
+\FunctionTok{summary}\NormalTok{(datos\_vr)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  CONTRACT_ID        ENTITY_NAME         DEPARTMENT        MUNICIPALITY_TYPE 
+##  Length:2118        Length:2118        Length:2118        Length:2118       
+##  Class :character   Class :character   Class :character   Class :character  
+##  Mode  :character   Mode  :character   Mode  :character   Mode  :character  
+##                                                                             
+##                                                                             
+##                                                                             
+##                                                                             
+##  PROCESS_TYPE       CONTRACT_OBJECT    OBJETC_DETAIL      ESTIMATED_COST_ORIG
+##  Length:2118        Length:2118        Length:2118        Min.   :2.001e+07  
+##  Class :character   Class :character   Class :character   1st Qu.:5.000e+07  
+##  Mode  :character   Mode  :character   Mode  :character   Median :1.000e+08  
+##                                                           Mean   :2.764e+08  
+##                                                           3rd Qu.:1.400e+08  
+##                                                           Max.   :2.301e+10  
+##                                                                              
+##  CONTRACT_VALUE_ORIG ADDITIONAL_COST_ORIG FINAL_COST_ORIG          YEAR     
+##  Min.   :2.000e+07   Min.   :0.000e+00    Min.   :2.000e+07   Min.   :2014  
+##  1st Qu.:5.000e+07   1st Qu.:0.000e+00    1st Qu.:5.000e+07   1st Qu.:2017  
+##  Median :1.000e+08   Median :0.000e+00    Median :1.000e+08   Median :2018  
+##  Mean   :2.751e+08   Mean   :1.552e+07    Mean   :2.906e+08   Mean   :2018  
+##  3rd Qu.:1.400e+08   3rd Qu.:0.000e+00    3rd Qu.:1.429e+08   3rd Qu.:2019  
+##  Max.   :2.301e+10   Max.   :6.972e+09    Max.   :2.301e+10   Max.   :2023  
+##                                                                             
+##  CONTRACT_DATE       START_DATE        ORIGINAL_DEADLINE   END_DATE        
+##  Length:2118        Length:2118        Min.   :    3.0   Length:2118       
+##  Class :character   Class :character   1st Qu.:   60.0   Class :character  
+##  Mode  :character   Mode  :character   Median :  180.0   Mode  :character  
+##                                        Mean   :  153.1                     
+##                                        3rd Qu.:  240.0                     
+##                                        Max.   :12600.0                     
+##                                                                            
+##  ID_ADJUDICACION     URLPROCESO        NIT_ENTIDAD        ID_CONTRATISTA    
+##  Min.   : 3675642   Length:2118        Length:2118        Length:2118       
+##  1st Qu.: 6560580   Class :character   Class :character   Class :character  
+##  Median : 7994850   Mode  :character   Mode  :character   Mode  :character  
+##  Mean   : 7789749                                                           
+##  3rd Qu.: 8714489                                                           
+##  Max.   :13016936                                                           
+##                                                                             
+##  DPTO_MUN_CONTRATISTA MUNICIPALITY       NOM_CONTRATISTA    ESTADO_PROCESO    
+##  Length:2118          Length:2118        Length:2118        Length:2118       
+##  Class :character     Class :character   Class :character   Class :character  
+##  Mode  :character     Mode  :character   Mode  :character   Mode  :character  
+##                                                                               
+##                                                                               
+##                                                                               
+##                                                                               
+##  MUNICIPIO_EJECUCION ESTIMATED_COST_NORM CONTRACT_VALUE_NORM
+##  Length:2118         Min.   :   21.00    Min.   :   21.00   
+##  Class :character    1st Qu.:   65.33    1st Qu.:   65.31   
+##  Mode  :character    Median :  120.76    Median :  120.76   
+##                      Mean   :  346.20    Mean   :  344.65   
+##                      3rd Qu.:  180.29    3rd Qu.:  180.82   
+##                      Max.   :26034.70    Max.   :25391.14   
+##                                                             
+##  ADDITIONAL_COST_NORM FINAL_COST_NORM    ADDITIONAL_TIME   FINAL_DEADLINE   
+##  Min.   :    0.0      Min.   :   21.00   Min.   :  0.000   Min.   :    3.0  
+##  1st Qu.:    0.0      1st Qu.:   65.49   1st Qu.:  0.000   1st Qu.:   60.0  
+##  Median :    0.0      Median :  120.76   Median :  0.000   Median :  180.0  
+##  Mean   :   20.9      Mean   :  365.54   Mean   :  5.749   Mean   :  158.8  
+##  3rd Qu.:    0.0      3rd Qu.:  184.61   3rd Qu.:  0.000   3rd Qu.:  240.0  
+##  Max.   :10112.1      Max.   :30376.74   Max.   :330.000   Max.   :12870.0  
+##                                                                             
+##  PROJECT_INTENSITY_NORM PROJECT_INTENSITY_ORIG  AWARD_GROWTH      
+##  Min.   :   0.0304      Min.   :2.664e+04      Min.   :-0.321127  
+##  1st Qu.:   0.5136      1st Qu.:4.090e+05      1st Qu.:-0.000052  
+##  Median :   0.7342      Median :5.556e+05      Median : 0.000000  
+##  Mean   :   4.1272      Mean   :3.273e+06      Mean   : 0.006211  
+##  3rd Qu.:   2.6299      3rd Qu.:2.051e+06      3rd Qu.: 0.000000  
+##  Max.   :2077.0037      Max.   :1.720e+09      Max.   : 9.000000  
+##                                                                   
+##  COST_DEVIATION   TIME_DEVIATION       OWNER              REGION         
+##  Min.   :0.0000   Min.   : 0.0000   Length:2118        Length:2118       
+##  1st Qu.:0.0000   1st Qu.: 0.0000   Class :character   Class :character  
+##  Median :0.0000   Median : 0.0000   Mode  :character   Mode  :character  
+##  Mean   :0.0273   Mean   : 0.1012                                        
+##  3rd Qu.:0.0000   3rd Qu.: 0.0000                                        
+##  Max.   :0.8093   Max.   :18.7500                                        
+##                                                                          
+##  HAVE_DEVIATION     HAVE_DEVIATION_COST HAVE_DEVIATION_TIME DEVIATION_TYPE    
+##  Length:2118        Length:2118         Length:2118         Length:2118       
+##  Class :character   Class :character    Class :character    Class :character  
+##  Mode  :character   Mode  :character    Mode  :character    Mode  :character  
+##                                                                               
+##                                                                               
+##                                                                               
+##                                                                               
+##  CONTRACT_VALUE_LOGNORM CONTRCT_MONTH_AT   NUM_PENALTIES_ENTIDAD
+##  Min.   : 4.392         Length:2118        Min.   : 0.000       
+##  1st Qu.: 6.029         Class :character   1st Qu.: 0.000       
+##  Median : 6.916         Mode  :character   Median : 3.000       
+##  Mean   : 6.981                            Mean   : 1.578       
+##  3rd Qu.: 7.498                            3rd Qu.: 3.000       
+##  Max.   :14.632                            Max.   :15.000       
+##                                                                 
+##  TOTAL_CONTRACTS_OBRAS_ENTITY PROPORTION_DEVIATION_ENTITY_ALL_TIME
+##  Min.   :    0                Min.   :0.00000                     
+##  1st Qu.:   50                1st Qu.:0.00000                     
+##  Median : 1549                Median :0.00000                     
+##  Mean   : 1570                Mean   :0.05945                     
+##  3rd Qu.: 2930                3rd Qu.:0.09432                     
+##  Max.   :10902                Max.   :0.59649                     
+##                                                                   
+##  PROPORTION_COST_DEVIATION_ENTITY_ALL_TIME
+##  Min.   :0.0000                           
+##  1st Qu.:0.0000                           
+##  Median :0.0000                           
+##  Mean   :0.0877                           
+##  3rd Qu.:0.1587                           
+##  Max.   :0.7000                           
+##                                           
+##  PROPORTION_TIME_DEVIATION_ENTITY_ALL_TIME
+##  Min.   :0.00000                          
+##  1st Qu.:0.00000                          
+##  Median :0.00000                          
+##  Mean   :0.09212                          
+##  3rd Qu.:0.15625                          
+##  Max.   :0.76190                          
+##                                           
+##  PROJECT_INTENSITY_NORM_ENTITY_ALL_TIME AWARD_GROWTH_ORIG_ENTITY_ALL_TIME
+##  Min.   : 0.000                         Min.   :-0.0378148               
+##  1st Qu.: 1.208                         1st Qu.:-0.0019244               
+##  Median : 1.752                         Median :-0.0016884               
+##  Mean   : 3.380                         Mean   :-0.0027001               
+##  3rd Qu.: 4.924                         3rd Qu.:-0.0009887               
+##  Max.   :18.841                         Max.   : 0.0200528               
+##                                                                          
+##  TOTAL_CONTRACTS_OBRAS_CONT PROPORTION_DEVIATION_CONT_ALL_TIME
+##  Min.   : 0.0000            Min.   :0.000000                  
+##  1st Qu.: 0.0000            1st Qu.:0.000000                  
+##  Median : 0.0000            Median :0.000000                  
+##  Mean   : 0.3588            Mean   :0.004002                  
+##  3rd Qu.: 0.0000            3rd Qu.:0.000000                  
+##  Max.   :53.0000            Max.   :1.000000                  
+##                                                               
+##  PROPORTION_COST_DEVIATION_CONT_ALL_TIME
+##  Min.   :0.000000                       
+##  1st Qu.:0.000000                       
+##  Median :0.000000                       
+##  Mean   :0.006764                       
+##  3rd Qu.:0.000000                       
+##  Max.   :1.000000                       
+##                                         
+##  PROPORTION_TIME_DEVIATION_CONT_ALL_TIME PROJECT_INTENSITY_NORM_CONT_ALL_TIME
+##  Min.   :0.000000                        Min.   : 0.0000                     
+##  1st Qu.:0.000000                        1st Qu.: 0.0000                     
+##  Median :0.000000                        Median : 0.0000                     
+##  Mean   :0.006947                        Mean   : 0.1272                     
+##  3rd Qu.:0.000000                        3rd Qu.: 0.0000                     
+##  Max.   :1.500000                        Max.   :14.4162                     
+##                                                                              
+##  AWARD_GROWTH_ORIG_CONT_ALL_TIME REGION_EJECUTION   DEPT_COD_EJECUTION
+##  Min.   :-0.0774115              Length:2118        Min.   : 5.00     
+##  1st Qu.: 0.0000000              Class :character   1st Qu.:11.00     
+##  Median : 0.0000000              Mode  :character   Median :11.00     
+##  Mean   :-0.0001066                                 Mean   :22.03     
+##  3rd Qu.: 0.0000000                                 3rd Qu.:25.00     
+##  Max.   : 0.0028174                                 Max.   :99.00     
+##                                                     NA's   :1         
+##  DEPARTMENT_EJECUTION MUN_COD_EJECUTION MUNICIPALITY_EJECUTION      LNG        
+##  Length:2118          Min.   : 5001     Length:2118            Min.   :-78.67  
+##  Class :character     1st Qu.:11001     Class :character       1st Qu.:-74.21  
+##  Mode  :character     Median :11001     Mode  :character       Median :-74.21  
+##                       Mean   :22233                            Mean   :-74.29  
+##                       3rd Qu.:25178                            3rd Qu.:-74.21  
+##                       Max.   :99001                            Max.   :-68.04  
+##                       NA's   :1                                NA's   :4       
+##       LAT             COD_DEPT     ECONOMIC_IMPORTANCE
+##  Min.   : 0.3207   Min.   : 5001   Min.   :    13.74  
+##  1st Qu.: 4.3168   1st Qu.:11001   1st Qu.:   172.91  
+##  Median : 4.3168   Median :11001   Median :217479.05  
+##  Mean   : 4.8611   Mean   :22130   Mean   :115567.70  
+##  3rd Qu.: 5.3767   3rd Qu.:25168   3rd Qu.:217479.05  
+##  Max.   :11.2432   Max.   :99001   Max.   :217479.05  
+##  NA's   :4         NA's   :4                          
+##  OPEN_TRANSPARENCE_GOBERMENT TRANSPORT_INVESTMENT FISCAL_DESEMPENO
+##  Min.   :25.58               Min.   :1.230e+08    Min.   :48.81   
+##  1st Qu.:85.42               1st Qu.:1.206e+09    1st Qu.:64.19   
+##  Median :98.49               Median :5.422e+11    Median :81.04   
+##  Mean   :90.34               Mean   :2.918e+11    Mean   :73.17   
+##  3rd Qu.:98.49               3rd Qu.:5.422e+11    3rd Qu.:81.04   
+##  Max.   :99.05               Max.   :5.889e+11    Max.   :81.04   
+##                                                                   
+##  PRESIDENTIAL_PERIOD REGIONAL_PERIOD       QUARTER 
+##  Length:2118         Length:2118        Min.   :1  
+##  Class :character    Class :character   1st Qu.:2  
+##  Mode  :character    Mode  :character   Median :3  
+##                                         Mean   :3  
+##                                         3rd Qu.:4  
+##                                         Max.   :4  
+## 
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{cols }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{\textquotesingle{}COST\_DEVIATION\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}CONTRACT\_VALUE\_LOGNORM\textquotesingle{}}\NormalTok{,}
+          \StringTok{\textquotesingle{}ORIGINAL\_DEADLINE\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}AWARD\_GROWTH\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}PROJECT\_INTENSITY\_NORM\textquotesingle{}}\NormalTok{,}
+          \StringTok{\textquotesingle{}TOTAL\_CONTRACTS\_OBRAS\_ENTITY\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}PROPORTION\_DEVIATION\_ENTITY\_ALL\_TIME\textquotesingle{}}\NormalTok{,}
+          \StringTok{\textquotesingle{}PROPORTION\_COST\_DEVIATION\_ENTITY\_ALL\_TIME\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}PROPORTION\_TIME\_DEVIATION\_ENTITY\_ALL\_TIME\textquotesingle{}}\NormalTok{,}
+          \StringTok{\textquotesingle{}PROJECT\_INTENSITY\_NORM\_ENTITY\_ALL\_TIME\textquotesingle{}}\NormalTok{,}
+          \StringTok{\textquotesingle{}AWARD\_GROWTH\_ORIG\_ENTITY\_ALL\_TIME\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}TOTAL\_CONTRACTS\_OBRAS\_CONT\textquotesingle{}}\NormalTok{,}
+          \StringTok{\textquotesingle{}PROPORTION\_DEVIATION\_CONT\_ALL\_TIME\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}PROPORTION\_COST\_DEVIATION\_CONT\_ALL\_TIME\textquotesingle{}}\NormalTok{,}
+          \StringTok{\textquotesingle{}PROPORTION\_TIME\_DEVIATION\_CONT\_ALL\_TIME\textquotesingle{}}\NormalTok{,}
+          \StringTok{\textquotesingle{}PROJECT\_INTENSITY\_NORM\_CONT\_ALL\_TIME\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}AWARD\_GROWTH\_ORIG\_CONT\_ALL\_TIME\textquotesingle{}}\NormalTok{,}
+          \StringTok{\textquotesingle{}ECONOMIC\_IMPORTANCE\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}OPEN\_TRANSPARENCE\_GOBERMENT\textquotesingle{}}\NormalTok{,}
+          \StringTok{\textquotesingle{}TRANSPORT\_INVESTMENT\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}FISCAL\_DESEMPENO\textquotesingle{}}\NormalTok{)}
+
+\NormalTok{correlation\_matrix }\OtherTok{\textless{}{-}} \FunctionTok{cor}\NormalTok{(datos\_vr[, cols])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(ggplot2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'ggplot2' was built under R version 4.3.3
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Crear scatter plot}
+\FunctionTok{ggplot}\NormalTok{(datos\_vr[  datos\_vr}\SpecialCharTok{$}\NormalTok{COST\_DEVIATION }\SpecialCharTok{\textgreater{}} \DecValTok{0}\NormalTok{,], }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ COST\_DEVIATION}\SpecialCharTok{*}\DecValTok{100}\NormalTok{)) }\SpecialCharTok{+}
+\CommentTok{\# ggplot(datos\_vr, aes(x = PROPORTION\_DEVIATION\_CONT\_ALL\_TIME)) +}
+\CommentTok{\# ggplot(datos\_vr, aes(x = log(PROJECT\_INTENSITY\_NORM\_ENTITY\_ALL\_TIME + 1))) +}
+  \FunctionTok{geom\_histogram}\NormalTok{(}\AttributeTok{color =} \StringTok{"black"}\NormalTok{, }\AttributeTok{size =} \DecValTok{1}\NormalTok{) }\SpecialCharTok{+}  \CommentTok{\# Puntos}
+    \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Desviación en costo en contratos de vías tercearias"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Desviación en costo (\%)"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"Freceuncia"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()  }\CommentTok{\# Tema limpio}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+## i Please use `linewidth` instead.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+## generated.
+\end{verbatim}
+
+\begin{verbatim}
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+\end{verbatim}
+
+\includegraphics{linear_models_mel_files/figure-latex/unnamed-chunk-3-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{datos\_vr}\SpecialCharTok{$}\NormalTok{PROJECT\_INTENSITY\_LOGNORM }\OtherTok{\textless{}{-}} \FunctionTok{log}\NormalTok{(datos\_vr}\SpecialCharTok{$}\NormalTok{PROJECT\_INTENSITY\_NORM)}
+\NormalTok{datos\_vr}\SpecialCharTok{$}\NormalTok{TOTAL\_CONTRACTS\_OBRAS\_ENTITY\_LOG }\OtherTok{\textless{}{-}} \FunctionTok{log}\NormalTok{(datos\_vr}\SpecialCharTok{$}\NormalTok{TOTAL\_CONTRACTS\_OBRAS\_ENTITY }\SpecialCharTok{+} \DecValTok{1}\NormalTok{)}
+\NormalTok{datos\_vr}\SpecialCharTok{$}\NormalTok{ECONOMIC\_IMPORTANCE\_LOG }\OtherTok{\textless{}{-}} \FunctionTok{log}\NormalTok{(datos\_vr}\SpecialCharTok{$}\NormalTok{ECONOMIC\_IMPORTANCE)}
+\NormalTok{datos\_vr}\SpecialCharTok{$}\NormalTok{TRANSPORT\_INVESTMENT\_LOG }\OtherTok{\textless{}{-}} \FunctionTok{log}\NormalTok{(datos\_vr}\SpecialCharTok{$}\NormalTok{TRANSPORT\_INVESTMENT)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{cols\_model\_num }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{\textquotesingle{}ORIGINAL\_DEADLINE\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}AWARD\_GROWTH\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}PROJECT\_INTENSITY\_LOGNORM\textquotesingle{}}\NormalTok{,}
+          \StringTok{\textquotesingle{}TOTAL\_CONTRACTS\_OBRAS\_ENTITY\_LOG\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}PROPORTION\_DEVIATION\_ENTITY\_ALL\_TIME\textquotesingle{}}\NormalTok{,}
+          \StringTok{\textquotesingle{}PROJECT\_INTENSITY\_NORM\_ENTITY\_ALL\_TIME\textquotesingle{}}\NormalTok{,}
+          \StringTok{\textquotesingle{}AWARD\_GROWTH\_ORIG\_ENTITY\_ALL\_TIME\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}TOTAL\_CONTRACTS\_OBRAS\_CONT\textquotesingle{}}\NormalTok{,}
+          \StringTok{\textquotesingle{}PROPORTION\_DEVIATION\_CONT\_ALL\_TIME\textquotesingle{}}\NormalTok{,}
+          \StringTok{\textquotesingle{}PROJECT\_INTENSITY\_NORM\_CONT\_ALL\_TIME\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}AWARD\_GROWTH\_ORIG\_CONT\_ALL\_TIME\textquotesingle{}}\NormalTok{,}
+          \StringTok{\textquotesingle{}ECONOMIC\_IMPORTANCE\_LOG\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}OPEN\_TRANSPARENCE\_GOBERMENT\textquotesingle{}}\NormalTok{,}
+          \StringTok{\textquotesingle{}TRANSPORT\_INVESTMENT\_LOG\textquotesingle{}}\NormalTok{,}
+          \StringTok{\textquotesingle{}FISCAL\_DESEMPENO\textquotesingle{}}\NormalTok{)}
+
+\NormalTok{correlation\_matrix }\OtherTok{\textless{}{-}} \FunctionTok{cor}\NormalTok{(datos\_vr[, cols\_model\_num])}
+
+\CommentTok{\# Escalar todas las columnas numéricas}
+\NormalTok{datos\_vr\_scaled }\OtherTok{\textless{}{-}} \FunctionTok{as.data.frame}\NormalTok{(}\FunctionTok{scale}\NormalTok{(datos\_vr[,cols\_model\_num]))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{cols\_cat }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{\textquotesingle{}OWNER\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}PRESIDENTIAL\_PERIOD\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}REGIONAL\_PERIOD\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}QUARTER\textquotesingle{}}\NormalTok{)}
+
+\NormalTok{datos\_vr\_scaled}\SpecialCharTok{$}\NormalTok{IS\_DEPARTMENT\_GOVERNMENT }\OtherTok{\textless{}{-}} \FunctionTok{ifelse}\NormalTok{(datos\_vr}\SpecialCharTok{$}\NormalTok{OWNER }\SpecialCharTok{==} \StringTok{\textquotesingle{}DEPARTMENT\_GOVERNMENT\textquotesingle{}}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{)}
+\NormalTok{datos\_vr\_scaled}\SpecialCharTok{$}\NormalTok{IS\_PRESIDENTIAL\_PERIOD }\OtherTok{\textless{}{-}} \FunctionTok{ifelse}\NormalTok{(datos\_vr}\SpecialCharTok{$}\NormalTok{PRESIDENTIAL\_PERIOD }\SpecialCharTok{==} \StringTok{\textquotesingle{}True\textquotesingle{}}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{)}
+\NormalTok{datos\_vr\_scaled}\SpecialCharTok{$}\NormalTok{IS\_REGIONAL\_PERIOD }\OtherTok{\textless{}{-}} \FunctionTok{ifelse}\NormalTok{(datos\_vr}\SpecialCharTok{$}\NormalTok{REGIONAL\_PERIOD }\SpecialCharTok{==} \StringTok{\textquotesingle{}True\textquotesingle{}}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{)}
+\NormalTok{datos\_vr\_scaled}\SpecialCharTok{$}\NormalTok{Q1 }\OtherTok{\textless{}{-}} \FunctionTok{ifelse}\NormalTok{(datos\_vr}\SpecialCharTok{$}\NormalTok{QUARTER }\SpecialCharTok{==} \DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{)}
+\NormalTok{datos\_vr\_scaled}\SpecialCharTok{$}\NormalTok{Q2 }\OtherTok{\textless{}{-}} \FunctionTok{ifelse}\NormalTok{(datos\_vr}\SpecialCharTok{$}\NormalTok{QUARTER }\SpecialCharTok{==} \DecValTok{2}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{)}
+\NormalTok{datos\_vr\_scaled}\SpecialCharTok{$}\NormalTok{Q3 }\OtherTok{\textless{}{-}} \FunctionTok{ifelse}\NormalTok{(datos\_vr}\SpecialCharTok{$}\NormalTok{QUARTER }\SpecialCharTok{==} \DecValTok{3}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{)}
+\NormalTok{datos\_vr\_scaled}\SpecialCharTok{$}\NormalTok{Q4 }\OtherTok{\textless{}{-}} \FunctionTok{ifelse}\NormalTok{(datos\_vr}\SpecialCharTok{$}\NormalTok{QUARTER }\SpecialCharTok{==} \DecValTok{4}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{)}
+
+\NormalTok{datos\_vr\_scaled}\SpecialCharTok{$}\NormalTok{LP }\OtherTok{\textless{}{-}} \FunctionTok{ifelse}\NormalTok{(datos\_vr}\SpecialCharTok{$}\NormalTok{PROCESS\_TYPE }\SpecialCharTok{==} \StringTok{\textquotesingle{}LICITACION PUBLICA\textquotesingle{}}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{)}
+
+\NormalTok{dummy\_var }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{\textquotesingle{}IS\_DEPARTMENT\_GOVERNMENT\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}IS\_PRESIDENTIAL\_PERIOD\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}IS\_REGIONAL\_PERIOD\textquotesingle{}}\NormalTok{,}
+               \StringTok{\textquotesingle{}Q1\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}Q2\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}Q3\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}LP\textquotesingle{}}
+\NormalTok{               )}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Modelo cost deviation}\label{modelo-cost-deviation}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lm\_variables }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(cols\_model\_num,dummy\_var)}
+\NormalTok{y\_variable }\OtherTok{\textless{}{-}} \StringTok{\textquotesingle{}COST\_DEVIATION\textquotesingle{}}
+
+\NormalTok{total\_variables }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\FunctionTok{c}\NormalTok{(y\_variable),lm\_variables)}
+
+
+\NormalTok{datos\_vr\_scaled}\SpecialCharTok{$}\NormalTok{COST\_DEVIATION }\OtherTok{\textless{}{-}}\NormalTok{ datos\_vr}\SpecialCharTok{$}\NormalTok{COST\_DEVIATION}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model1 }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(}\AttributeTok{formula=}\NormalTok{ COST\_DEVIATION }\SpecialCharTok{\textasciitilde{}}\NormalTok{ ., }\AttributeTok{data=}\NormalTok{datos\_vr\_scaled[,total\_variables])}
+\FunctionTok{summary}\NormalTok{(model1)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = COST_DEVIATION ~ ., data = datos_vr_scaled[, total_variables])
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.16359 -0.04664 -0.00141  0.00205  0.72651 
+## 
+## Coefficients:
+##                                          Estimate Std. Error t value Pr(>|t|)
+## (Intercept)                             0.0489517  0.0086967   5.629 2.06e-08
+## ORIGINAL_DEADLINE                       0.0003821  0.0021943   0.174  0.86177
+## AWARD_GROWTH                           -0.0002630  0.0020861  -0.126  0.89971
+## PROJECT_INTENSITY_LOGNORM               0.0069251  0.0036646   1.890  0.05893
+## TOTAL_CONTRACTS_OBRAS_ENTITY_LOG        0.0024317  0.0043561   0.558  0.57676
+## PROPORTION_DEVIATION_ENTITY_ALL_TIME    0.0081999  0.0027566   2.975  0.00297
+## PROJECT_INTENSITY_NORM_ENTITY_ALL_TIME  0.0068694  0.0033537   2.048  0.04065
+## AWARD_GROWTH_ORIG_ENTITY_ALL_TIME      -0.0025675  0.0022646  -1.134  0.25702
+## TOTAL_CONTRACTS_OBRAS_CONT              0.0009257  0.0027243   0.340  0.73403
+## PROPORTION_DEVIATION_CONT_ALL_TIME      0.0039687  0.0027470   1.445  0.14869
+## PROJECT_INTENSITY_NORM_CONT_ALL_TIME   -0.0026625  0.0027976  -0.952  0.34136
+## AWARD_GROWTH_ORIG_CONT_ALL_TIME         0.0032352  0.0023968   1.350  0.17722
+## ECONOMIC_IMPORTANCE_LOG                 0.0217690  0.0124686   1.746  0.08098
+## OPEN_TRANSPARENCE_GOBERMENT             0.0035894  0.0032606   1.101  0.27109
+## TRANSPORT_INVESTMENT_LOG               -0.0378194  0.0129296  -2.925  0.00348
+## FISCAL_DESEMPENO                        0.0094229  0.0063807   1.477  0.13989
+## IS_DEPARTMENT_GOVERNMENT               -0.0292558  0.0136741  -2.139  0.03251
+## IS_PRESIDENTIAL_PERIOD                 -0.0039002  0.0054090  -0.721  0.47096
+## IS_REGIONAL_PERIOD                     -0.0183237  0.0059812  -3.064  0.00222
+## Q1                                      0.0027102  0.0085459   0.317  0.75117
+## Q2                                      0.0120938  0.0058492   2.068  0.03880
+## Q3                                     -0.0012497  0.0078737  -0.159  0.87391
+## LP                                     -0.0097588  0.0086059  -1.134  0.25694
+##                                           
+## (Intercept)                            ***
+## ORIGINAL_DEADLINE                         
+## AWARD_GROWTH                              
+## PROJECT_INTENSITY_LOGNORM              .  
+## TOTAL_CONTRACTS_OBRAS_ENTITY_LOG          
+## PROPORTION_DEVIATION_ENTITY_ALL_TIME   ** 
+## PROJECT_INTENSITY_NORM_ENTITY_ALL_TIME *  
+## AWARD_GROWTH_ORIG_ENTITY_ALL_TIME         
+## TOTAL_CONTRACTS_OBRAS_CONT                
+## PROPORTION_DEVIATION_CONT_ALL_TIME        
+## PROJECT_INTENSITY_NORM_CONT_ALL_TIME      
+## AWARD_GROWTH_ORIG_CONT_ALL_TIME           
+## ECONOMIC_IMPORTANCE_LOG                .  
+## OPEN_TRANSPARENCE_GOBERMENT               
+## TRANSPORT_INVESTMENT_LOG               ** 
+## FISCAL_DESEMPENO                          
+## IS_DEPARTMENT_GOVERNMENT               *  
+## IS_PRESIDENTIAL_PERIOD                    
+## IS_REGIONAL_PERIOD                     ** 
+## Q1                                        
+## Q2                                     *  
+## Q3                                        
+## LP                                        
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.09544 on 2095 degrees of freedom
+## Multiple R-squared:  0.1089, Adjusted R-squared:  0.09957 
+## F-statistic: 11.64 on 22 and 2095 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Crear dataframe con residuos}
+\NormalTok{datos\_vr}\SpecialCharTok{$}\NormalTok{residuos }\OtherTok{\textless{}{-}} \FunctionTok{residuals}\NormalTok{(model1)}
+\NormalTok{datos\_vr}\SpecialCharTok{$}\NormalTok{ajustados }\OtherTok{\textless{}{-}} \FunctionTok{fitted}\NormalTok{(model1)}
+
+\CommentTok{\# Graficar}
+\FunctionTok{ggplot}\NormalTok{(datos\_vr, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ ajustados, }\AttributeTok{y =}\NormalTok{ residuos)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{color =} \StringTok{"blue"}\NormalTok{) }\SpecialCharTok{+}  \CommentTok{\# Puntos}
+  \FunctionTok{geom\_hline}\NormalTok{(}\AttributeTok{yintercept =} \DecValTok{0}\NormalTok{, }\AttributeTok{color =} \StringTok{"red"}\NormalTok{, }\AttributeTok{linetype =} \StringTok{"dashed"}\NormalTok{) }\SpecialCharTok{+}  \CommentTok{\# Línea en 0}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Gráfico de Residuales"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Valores Ajustados"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"Residuales"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{linear_models_mel_files/figure-latex/unnamed-chunk-9-1.pdf}
+
+\subsection{Modelo time deviation}\label{modelo-time-deviation}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lm\_variables }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(cols\_model\_num,dummy\_var)}
+\NormalTok{y\_variable }\OtherTok{\textless{}{-}} \StringTok{\textquotesingle{}TIME\_DEVIATION\textquotesingle{}}
+
+\NormalTok{total\_variables }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\FunctionTok{c}\NormalTok{(y\_variable),lm\_variables)}
+
+
+\NormalTok{datos\_vr\_scaled}\SpecialCharTok{$}\NormalTok{TIME\_DEVIATION }\OtherTok{\textless{}{-}}\NormalTok{ datos\_vr}\SpecialCharTok{$}\NormalTok{TIME\_DEVIATION}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model1 }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(}\AttributeTok{formula=}\NormalTok{ TIME\_DEVIATION }\SpecialCharTok{\textasciitilde{}}\NormalTok{ ., }\AttributeTok{data=}\NormalTok{datos\_vr\_scaled[datos\_vr\_scaled}\SpecialCharTok{$}\NormalTok{TIME\_DEVIATION }\SpecialCharTok{\textless{}} \DecValTok{3}\NormalTok{,total\_variables])}
+\FunctionTok{summary}\NormalTok{(model1)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = TIME_DEVIATION ~ ., data = datos_vr_scaled[datos_vr_scaled$TIME_DEVIATION < 
+##     3, total_variables])
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.73976 -0.08841 -0.00870  0.01749  2.27909 
+## 
+## Coefficients:
+##                                          Estimate Std. Error t value Pr(>|t|)
+## (Intercept)                             0.1317863  0.0219487   6.004 2.26e-09
+## ORIGINAL_DEADLINE                       0.0005184  0.0055099   0.094 0.925051
+## AWARD_GROWTH                           -0.0054659  0.0052391  -1.043 0.296933
+## PROJECT_INTENSITY_LOGNORM               0.0897263  0.0094723   9.472  < 2e-16
+## TOTAL_CONTRACTS_OBRAS_ENTITY_LOG        0.0029938  0.0110503   0.271 0.786475
+## PROPORTION_DEVIATION_ENTITY_ALL_TIME    0.0240643  0.0069389   3.468 0.000535
+## PROJECT_INTENSITY_NORM_ENTITY_ALL_TIME -0.0052601  0.0084865  -0.620 0.535446
+## AWARD_GROWTH_ORIG_ENTITY_ALL_TIME      -0.0173957  0.0057031  -3.050 0.002315
+## TOTAL_CONTRACTS_OBRAS_CONT              0.0041352  0.0068404   0.605 0.545562
+## PROPORTION_DEVIATION_CONT_ALL_TIME      0.0091447  0.0068982   1.326 0.185096
+## PROJECT_INTENSITY_NORM_CONT_ALL_TIME   -0.0177711  0.0070274  -2.529 0.011517
+## AWARD_GROWTH_ORIG_CONT_ALL_TIME         0.0070395  0.0060178   1.170 0.242223
+## ECONOMIC_IMPORTANCE_LOG                 0.0542778  0.0314789   1.724 0.084809
+## OPEN_TRANSPARENCE_GOBERMENT             0.0067082  0.0082178   0.816 0.414423
+## TRANSPORT_INVESTMENT_LOG               -0.0798114  0.0326620  -2.444 0.014626
+## FISCAL_DESEMPENO                        0.0502209  0.0161921   3.102 0.001951
+## IS_DEPARTMENT_GOVERNMENT               -0.0548941  0.0344310  -1.594 0.111016
+## IS_PRESIDENTIAL_PERIOD                 -0.0312168  0.0136253  -2.291 0.022058
+## IS_REGIONAL_PERIOD                     -0.0388224  0.0150832  -2.574 0.010125
+## Q1                                     -0.0120452  0.0215201  -0.560 0.575733
+## Q2                                     -0.0176698  0.0147506  -1.198 0.231092
+## Q3                                     -0.0394593  0.0198329  -1.990 0.046767
+## LP                                      0.0125651  0.0218482   0.575 0.565280
+##                                           
+## (Intercept)                            ***
+## ORIGINAL_DEADLINE                         
+## AWARD_GROWTH                              
+## PROJECT_INTENSITY_LOGNORM              ***
+## TOTAL_CONTRACTS_OBRAS_ENTITY_LOG          
+## PROPORTION_DEVIATION_ENTITY_ALL_TIME   ***
+## PROJECT_INTENSITY_NORM_ENTITY_ALL_TIME    
+## AWARD_GROWTH_ORIG_ENTITY_ALL_TIME      ** 
+## TOTAL_CONTRACTS_OBRAS_CONT                
+## PROPORTION_DEVIATION_CONT_ALL_TIME        
+## PROJECT_INTENSITY_NORM_CONT_ALL_TIME   *  
+## AWARD_GROWTH_ORIG_CONT_ALL_TIME           
+## ECONOMIC_IMPORTANCE_LOG                .  
+## OPEN_TRANSPARENCE_GOBERMENT               
+## TRANSPORT_INVESTMENT_LOG               *  
+## FISCAL_DESEMPENO                       ** 
+## IS_DEPARTMENT_GOVERNMENT                  
+## IS_PRESIDENTIAL_PERIOD                 *  
+## IS_REGIONAL_PERIOD                     *  
+## Q1                                        
+## Q2                                        
+## Q3                                     *  
+## LP                                        
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.2396 on 2083 degrees of freedom
+## Multiple R-squared:  0.1679, Adjusted R-squared:  0.1591 
+## F-statistic:  19.1 on 22 and 2083 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{head}\NormalTok{(datos\_vr)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##             CONTRACT_ID
+## 1 18-12-8757377-7960112
+## 2   15-1-147652-4032692
+## 3 18-11-7949806-7498890
+## 4 18-12-8795518-7996306
+## 5 17-12-7271020-6605366
+## 6 18-12-8629357-7850377
+##                                                                        ENTITY_NAME
+## 1 CUNDINAMARCA - INSTITUTO DE INFRAESTRUCTURA Y CONCESIONES DE CUNDINAMARCA - ICCU
+## 2                                      CUNDINAMARCA - ALCALDiA MUNICIPIO DE UBAQUE
+## 3                                         BOYACa - ALCALDiA MUNICIPIO DE VIRACACHa
+## 4 CUNDINAMARCA - INSTITUTO DE INFRAESTRUCTURA Y CONCESIONES DE CUNDINAMARCA - ICCU
+## 5 CUNDINAMARCA - INSTITUTO DE INFRAESTRUCTURA Y CONCESIONES DE CUNDINAMARCA - ICCU
+## 6 CUNDINAMARCA - INSTITUTO DE INFRAESTRUCTURA Y CONCESIONES DE CUNDINAMARCA - ICCU
+##     DEPARTMENT MUNICIPALITY_TYPE                         PROCESS_TYPE
+## 1  BOGOTA D.C.             OTHER                 CONTRATACION DIRECTA
+## 2 CUNDINAMARCA            TYPE_6                   LICITACION PUBLICA
+## 3       BOYACA            TYPE_6 SELECCION ABREVIADA DE MENOR CUANTIA
+## 4  BOGOTA D.C.             OTHER                 CONTRATACION DIRECTA
+## 5  BOGOTA D.C.             OTHER                 CONTRATACION DIRECTA
+## 6  BOGOTA D.C.             OTHER                 CONTRATACION DIRECTA
+##                           CONTRACT_OBJECT
+## 1 TERRENOS, EDIFICIOS, ESTRUCTURAS Y VIAS
+## 2 TERRENOS, EDIFICIOS, ESTRUCTURAS Y VIAS
+## 3 TERRENOS, EDIFICIOS, ESTRUCTURAS Y VIAS
+## 4 TERRENOS, EDIFICIOS, ESTRUCTURAS Y VIAS
+## 5 TERRENOS, EDIFICIOS, ESTRUCTURAS Y VIAS
+## 6 TERRENOS, EDIFICIOS, ESTRUCTURAS Y VIAS
+##                                                                                                                                                                                                      OBJETC_DETAIL
+## 1                                                                           MEJORAMIENTO DE LA VIA SAN JOSE ALTO DE LOS CABALLEROS SECTOR SAN JOSE VEREDA CENTRO DEL LLANO; MUNICIPIO DE VILLA DE SAN DIEGO UBATE.
+## 2 CONTRATAR MEDIANTE EL SISTEMA DE PRECIOS UNITARIOS FIJOS NO REAJUSTABLES; LA CONSTRUCCION DE PLACA HUELLAS PARA EL MEJORAMIENTO VIAL EN LAS VEREDAS FISTEGA; CACIQUE; MOLINO; RIO NEGRO; ROMERO BAJO Y SABANILLA
+## 3                                       MEJORAMIENTO DE VIAS MUNICIPALES Y CONSTRUCCION DE PLACA HUELLA EN LA VEREDA CHEN VIA PASO BLANCO Y SECTOR MATARREDONDA  DEL MUNICIPIO DE VIRACACHA DEPARTAMENTO DE BOYACA
+## 4                                                                         MEJORAMIENTO DE LA VIA QUE COMUNICA LA VEREDA PARAMON CON LA VEREDA GUAYAQUIL SECTOR MATA GUADUA; EN EL MUNICIPIO DE PULI; CUNDINAMARCA.
+## 5                                                                                            MEJORAMIENTO DE LA VIA ANOLAIMA - VEREDA LIMONAL SECTOR ESCUELA PUERTO LOPEZ DEL MUNICIPIO DE ANOLAIMA; CUNDINAMARCA.
+## 6                                                  MEJORAMIENTO DE LA VIA QUE CONDUCE DEL COMPLEJO DEPORTIVO AL SECTOR LOS CERRITOS DE LA VEREDA DE RODAMONTAL; SECTOR EL GUAJIRO MUNICIPIO DE COGUA; CUNDINAMARCA
+##   ESTIMATED_COST_ORIG CONTRACT_VALUE_ORIG ADDITIONAL_COST_ORIG FINAL_COST_ORIG
+## 1           100000000           100000000                    0       100000000
+## 2           700459984           700459984                    0       700459984
+## 3           218367363           217998966             49969805       267968771
+## 4            56800000            56800000                    0        56800000
+## 5           100000000           100000000                    0       100000000
+## 6           100000000           100000000                    0       100000000
+##   YEAR CONTRACT_DATE START_DATE ORIGINAL_DEADLINE   END_DATE ID_ADJUDICACION
+## 1 2018    2018-12-11 2018-12-31               240 2019-08-31         7960112
+## 2 2015    2015-10-26 2015-11-10               120 2016-03-10         4032692
+## 3 2018    2018-04-13 2018-04-13               180 2018-10-10         7498890
+## 4 2018    2018-12-21 2018-12-31               240 2019-08-31         7996306
+## 5 2017    2017-11-07 2017-11-30               240 2018-07-30         6605366
+## 6 2018    2018-11-06 2018-11-30               240 2019-07-30         7850377
+##                                                                                        URLPROCESO
+## 1 {'url': 'https://www.contratos.gov.co/consultas/detalleProceso.do?numConstancia=18-12-8757377'}
+## 2   {'url': 'https://www.contratos.gov.co/consultas/detalleProceso.do?numConstancia=15-1-147652'}
+## 3 {'url': 'https://www.contratos.gov.co/consultas/detalleProceso.do?numConstancia=18-11-7949806'}
+## 4 {'url': 'https://www.contratos.gov.co/consultas/detalleProceso.do?numConstancia=18-12-8795518'}
+## 5 {'url': 'https://www.contratos.gov.co/consultas/detalleProceso.do?numConstancia=17-12-7271020'}
+## 6 {'url': 'https://www.contratos.gov.co/consultas/detalleProceso.do?numConstancia=18-12-8629357'}
+##   NIT_ENTIDAD ID_CONTRATISTA DPTO_MUN_CONTRATISTA MUNICIPALITY
+## 1   900258711      899999281         CUNDINAMARCA  BOGOTa D.C.
+## 2 No Definido    900902330-1         CUNDINAMARCA       UBAQUE
+## 3   891801347        7168649               BOYACa    VIRACACHa
+## 4   900258711      800085612         CUNDINAMARCA  BOGOTa D.C.
+## 5   900258711      899999426         CUNDINAMARCA  BOGOTa D.C.
+## 6   900258711      899999466         CUNDINAMARCA  BOGOTa D.C.
+##                        NOM_CONTRATISTA ESTADO_PROCESO MUNICIPIO_EJECUCION
+## 1                   MUNICIPIO DE UBATE      LIQUIDADO         BOGOTa D.C.
+## 2               UNION TEMPORAL FISTEGA      LIQUIDADO              UBAQUE
+## 3        EDBIN GUILLERMO AVILA FONSECA      LIQUIDADO           VIRACACHa
+## 4                    MUNICIPIO DE PULI      LIQUIDADO         BOGOTa D.C.
+## 5 MUNICIPIO DE ANOLAIMA, CUNDINAMARCA.      LIQUIDADO         BOGOTa D.C.
+## 6                   MUNICIPIO DE COGUA      LIQUIDADO         BOGOTa D.C.
+##   ESTIMATED_COST_NORM CONTRACT_VALUE_NORM ADDITIONAL_COST_NORM FINAL_COST_NORM
+## 1           128.00131           128.00131              0.00000       128.00131
+## 2          1087.07998          1087.07998              0.00000      1087.07998
+## 3           279.51309           279.04153             63.96201       343.00354
+## 4            72.70474            72.70474              0.00000        72.70474
+## 5           135.55334           135.55334              0.00000       135.55334
+## 6           128.00131           128.00131              0.00000       128.00131
+##   ADDITIONAL_TIME FINAL_DEADLINE PROJECT_INTENSITY_NORM PROJECT_INTENSITY_ORIG
+## 1               0            240              0.5333388               416666.7
+## 2               0            120              9.0589998              5837166.5
+## 3               0            180              1.5502307              1211105.4
+## 4               0            240              0.3029364               236666.7
+## 5               0            240              0.5648056               416666.7
+## 6               0            240              0.5333388               416666.7
+##   AWARD_GROWTH COST_DEVIATION TIME_DEVIATION                 OWNER REGION
+## 1  0.000000000      0.0000000              0 DEPARTMENT_GOVERNMENT ANDINA
+## 2  0.000000000      0.0000000              0          MUNICIPALITY ANDINA
+## 3 -0.001687052      0.2292204              0          MUNICIPALITY ANDINA
+## 4  0.000000000      0.0000000              0 DEPARTMENT_GOVERNMENT ANDINA
+## 5  0.000000000      0.0000000              0 DEPARTMENT_GOVERNMENT ANDINA
+## 6  0.000000000      0.0000000              0 DEPARTMENT_GOVERNMENT ANDINA
+##   HAVE_DEVIATION HAVE_DEVIATION_COST HAVE_DEVIATION_TIME      DEVIATION_TYPE
+## 1          False               False               False             Neither
+## 2          False               False               False             Neither
+## 3           True                True               False Only cost deviation
+## 4          False               False               False             Neither
+## 5          False               False               False             Neither
+## 6          False               False               False             Neither
+##   CONTRACT_VALUE_LOGNORM CONTRCT_MONTH_AT NUM_PENALTIES_ENTIDAD
+## 1               7.000015         18-12-01                     3
+## 2              10.086242         15-10-01                     0
+## 3               8.124336         18-04-01                     0
+## 4               6.183978         18-12-01                     3
+## 5               7.082717         17-11-01                     3
+## 6               7.000015         18-11-01                     3
+##   TOTAL_CONTRACTS_OBRAS_ENTITY PROPORTION_DEVIATION_ENTITY_ALL_TIME
+## 1                         2666                            0.0000000
+## 2                         2530                            0.1197628
+## 3                           19                            0.1052632
+## 4                         2822                            0.0000000
+## 5                         2135                            0.0000000
+## 6                         2531                            0.0000000
+##   PROPORTION_COST_DEVIATION_ENTITY_ALL_TIME
+## 1                                 0.0000000
+## 2                                 0.1644269
+## 3                                 0.4210526
+## 4                                 0.0000000
+## 5                                 0.0000000
+## 6                                 0.0000000
+##   PROPORTION_TIME_DEVIATION_ENTITY_ALL_TIME
+## 1                                 0.0000000
+## 2                                 0.1865613
+## 3                                 0.1578947
+## 4                                 0.0000000
+## 5                                 0.0000000
+## 6                                 0.0000000
+##   PROJECT_INTENSITY_NORM_ENTITY_ALL_TIME AWARD_GROWTH_ORIG_ENTITY_ALL_TIME
+## 1                               1.248338                     -0.0017747729
+## 2                               7.145258                     -0.0068088483
+## 3                               2.931971                     -0.0013712252
+## 4                               1.217491                     -0.0017054080
+## 5                               1.255379                     -0.0009226033
+## 6                               1.294632                     -0.0018296946
+##   TOTAL_CONTRACTS_OBRAS_CONT PROPORTION_DEVIATION_CONT_ALL_TIME
+## 1                          0                                  0
+## 2                          0                                  0
+## 3                         10                                  0
+## 4                          0                                  0
+## 5                          0                                  0
+## 6                          0                                  0
+##   PROPORTION_COST_DEVIATION_CONT_ALL_TIME
+## 1                                     0.0
+## 2                                     0.0
+## 3                                     0.2
+## 4                                     0.0
+## 5                                     0.0
+## 6                                     0.0
+##   PROPORTION_TIME_DEVIATION_CONT_ALL_TIME PROJECT_INTENSITY_NORM_CONT_ALL_TIME
+## 1                                       0                             0.000000
+## 2                                       0                             0.000000
+## 3                                       0                             2.837957
+## 4                                       0                             0.000000
+## 5                                       0                             0.000000
+## 6                                       0                             0.000000
+##   AWARD_GROWTH_ORIG_CONT_ALL_TIME      REGION_EJECUTION DEPT_COD_EJECUTION
+## 1                    0.0000000000 REGIÓN CENTRO ORIENTE                 11
+## 2                    0.0000000000 REGIÓN CENTRO ORIENTE                 25
+## 3                   -0.0001947752 REGIÓN CENTRO ORIENTE                 15
+## 4                    0.0000000000 REGIÓN CENTRO ORIENTE                 11
+## 5                    0.0000000000 REGIÓN CENTRO ORIENTE                 11
+## 6                    0.0000000000 REGIÓN CENTRO ORIENTE                 11
+##   DEPARTMENT_EJECUTION MUN_COD_EJECUTION MUNICIPALITY_EJECUTION       LNG
+## 1          BOGOTÁ D.C.             11001            BOGOTÁ D.C. -74.20605
+## 2         CUNDINAMARCA             25841                 UBAQUE -73.93346
+## 3               BOYACÁ             15879              VIRACACHÁ -73.29690
+## 4          BOGOTÁ D.C.             11001            BOGOTÁ D.C. -74.20605
+## 5          BOGOTÁ D.C.             11001            BOGOTÁ D.C. -74.20605
+## 6          BOGOTÁ D.C.             11001            BOGOTÁ D.C. -74.20605
+##        LAT COD_DEPT ECONOMIC_IMPORTANCE OPEN_TRANSPARENCE_GOBERMENT
+## 1 4.316840    11001          217479.046                    98.49286
+## 2 4.483802    25841             166.815                    71.45143
+## 3 5.436789    15879              38.035                    98.56714
+## 4 4.316840    11001          217479.046                    98.49286
+## 5 4.316840    11001          217479.046                    98.49286
+## 6 4.316840    11001          217479.046                    98.49286
+##   TRANSPORT_INVESTMENT FISCAL_DESEMPENO PRESIDENTIAL_PERIOD REGIONAL_PERIOD
+## 1         542243238757         81.04143                True           False
+## 2           2144201801         64.84000               False            True
+## 3            620945099         56.85714                True           False
+## 4         542243238757         81.04143                True           False
+## 5         542243238757         81.04143               False           False
+## 6         542243238757         81.04143                True           False
+##   QUARTER PROJECT_INTENSITY_LOGNORM TOTAL_CONTRACTS_OBRAS_ENTITY_LOG
+## 1       4                -0.6285984                         7.888710
+## 2       4                 2.2037587                         7.836370
+## 3       2                 0.4384038                         2.995732
+## 4       4                -1.1942323                         7.945555
+## 5       4                -0.5712737                         7.666690
+## 6       4                -0.6285984                         7.836765
+##   ECONOMIC_IMPORTANCE_LOG TRANSPORT_INVESTMENT_LOG      residuos     ajustados
+## 1               12.289858                 27.01898  0.0009807098 -0.0009807098
+## 2                5.116885                 21.48603 -0.0477964375  0.0477964375
+## 3                3.638507                 20.24675  0.1744607246  0.0547596516
+## 4               12.289858                 27.01898  0.0042576157 -0.0042576157
+## 5               12.289858                 27.01898 -0.0025174872  0.0025174872
+## 6               12.289858                 27.01898  0.0008938227 -0.0008938227
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Ahora vamos analizar los datos}
+\NormalTok{datos\_vr }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"../data/collected\_vias\_rurales\_ve\_data\_v5.csv"}\NormalTok{)}
+\FunctionTok{summary}\NormalTok{(datos\_vr)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  CONTRACT_ID        ENTITY_NAME         DEPARTMENT        MUNICIPALITY_TYPE 
+##  Length:2118        Length:2118        Length:2118        Length:2118       
+##  Class :character   Class :character   Class :character   Class :character  
+##  Mode  :character   Mode  :character   Mode  :character   Mode  :character  
+##                                                                             
+##                                                                             
+##                                                                             
+##                                                                             
+##  PROCESS_TYPE       CONTRACT_OBJECT    OBJETC_DETAIL      ESTIMATED_COST_ORIG
+##  Length:2118        Length:2118        Length:2118        Min.   :2.001e+07  
+##  Class :character   Class :character   Class :character   1st Qu.:5.000e+07  
+##  Mode  :character   Mode  :character   Mode  :character   Median :1.000e+08  
+##                                                           Mean   :2.764e+08  
+##                                                           3rd Qu.:1.400e+08  
+##                                                           Max.   :2.301e+10  
+##                                                                              
+##  CONTRACT_VALUE_ORIG ADDITIONAL_COST_ORIG FINAL_COST_ORIG          YEAR     
+##  Min.   :2.000e+07   Min.   :0.000e+00    Min.   :2.000e+07   Min.   :2014  
+##  1st Qu.:5.000e+07   1st Qu.:0.000e+00    1st Qu.:5.000e+07   1st Qu.:2017  
+##  Median :1.000e+08   Median :0.000e+00    Median :1.000e+08   Median :2018  
+##  Mean   :2.751e+08   Mean   :1.552e+07    Mean   :2.906e+08   Mean   :2018  
+##  3rd Qu.:1.400e+08   3rd Qu.:0.000e+00    3rd Qu.:1.429e+08   3rd Qu.:2019  
+##  Max.   :2.301e+10   Max.   :6.972e+09    Max.   :2.301e+10   Max.   :2023  
+##                                                                             
+##  CONTRACT_DATE       START_DATE        ORIGINAL_DEADLINE   END_DATE        
+##  Length:2118        Length:2118        Min.   :    3.0   Length:2118       
+##  Class :character   Class :character   1st Qu.:   60.0   Class :character  
+##  Mode  :character   Mode  :character   Median :  180.0   Mode  :character  
+##                                        Mean   :  153.1                     
+##                                        3rd Qu.:  240.0                     
+##                                        Max.   :12600.0                     
+##                                                                            
+##  ID_ADJUDICACION     URLPROCESO        NIT_ENTIDAD        ID_CONTRATISTA    
+##  Min.   : 3675642   Length:2118        Length:2118        Length:2118       
+##  1st Qu.: 6560580   Class :character   Class :character   Class :character  
+##  Median : 7994850   Mode  :character   Mode  :character   Mode  :character  
+##  Mean   : 7789749                                                           
+##  3rd Qu.: 8714489                                                           
+##  Max.   :13016936                                                           
+##                                                                             
+##  DPTO_MUN_CONTRATISTA MUNICIPALITY       NOM_CONTRATISTA    ESTADO_PROCESO    
+##  Length:2118          Length:2118        Length:2118        Length:2118       
+##  Class :character     Class :character   Class :character   Class :character  
+##  Mode  :character     Mode  :character   Mode  :character   Mode  :character  
+##                                                                               
+##                                                                               
+##                                                                               
+##                                                                               
+##  MUNICIPIO_EJECUCION ESTIMATED_COST_NORM CONTRACT_VALUE_NORM
+##  Length:2118         Min.   :   21.00    Min.   :   21.00   
+##  Class :character    1st Qu.:   65.33    1st Qu.:   65.31   
+##  Mode  :character    Median :  120.76    Median :  120.76   
+##                      Mean   :  346.20    Mean   :  344.65   
+##                      3rd Qu.:  180.29    3rd Qu.:  180.82   
+##                      Max.   :26034.70    Max.   :25391.14   
+##                                                             
+##  ADDITIONAL_COST_NORM FINAL_COST_NORM    ADDITIONAL_TIME   FINAL_DEADLINE   
+##  Min.   :    0.0      Min.   :   21.00   Min.   :  0.000   Min.   :    3.0  
+##  1st Qu.:    0.0      1st Qu.:   65.49   1st Qu.:  0.000   1st Qu.:   60.0  
+##  Median :    0.0      Median :  120.76   Median :  0.000   Median :  180.0  
+##  Mean   :   20.9      Mean   :  365.54   Mean   :  5.749   Mean   :  158.8  
+##  3rd Qu.:    0.0      3rd Qu.:  184.61   3rd Qu.:  0.000   3rd Qu.:  240.0  
+##  Max.   :10112.1      Max.   :30376.74   Max.   :330.000   Max.   :12870.0  
+##                                                                             
+##  PROJECT_INTENSITY_NORM PROJECT_INTENSITY_ORIG  AWARD_GROWTH      
+##  Min.   :   0.0304      Min.   :2.664e+04      Min.   :-0.321127  
+##  1st Qu.:   0.5136      1st Qu.:4.090e+05      1st Qu.:-0.000052  
+##  Median :   0.7342      Median :5.556e+05      Median : 0.000000  
+##  Mean   :   4.1272      Mean   :3.273e+06      Mean   : 0.006211  
+##  3rd Qu.:   2.6299      3rd Qu.:2.051e+06      3rd Qu.: 0.000000  
+##  Max.   :2077.0037      Max.   :1.720e+09      Max.   : 9.000000  
+##                                                                   
+##  COST_DEVIATION   TIME_DEVIATION       OWNER              REGION         
+##  Min.   :0.0000   Min.   : 0.0000   Length:2118        Length:2118       
+##  1st Qu.:0.0000   1st Qu.: 0.0000   Class :character   Class :character  
+##  Median :0.0000   Median : 0.0000   Mode  :character   Mode  :character  
+##  Mean   :0.0273   Mean   : 0.1012                                        
+##  3rd Qu.:0.0000   3rd Qu.: 0.0000                                        
+##  Max.   :0.8093   Max.   :18.7500                                        
+##                                                                          
+##  HAVE_DEVIATION     HAVE_DEVIATION_COST HAVE_DEVIATION_TIME DEVIATION_TYPE    
+##  Length:2118        Length:2118         Length:2118         Length:2118       
+##  Class :character   Class :character    Class :character    Class :character  
+##  Mode  :character   Mode  :character    Mode  :character    Mode  :character  
+##                                                                               
+##                                                                               
+##                                                                               
+##                                                                               
+##  CONTRACT_VALUE_LOGNORM CONTRCT_MONTH_AT   NUM_PENALTIES_ENTIDAD
+##  Min.   : 4.392         Length:2118        Min.   : 0.000       
+##  1st Qu.: 6.029         Class :character   1st Qu.: 0.000       
+##  Median : 6.916         Mode  :character   Median : 3.000       
+##  Mean   : 6.981                            Mean   : 1.578       
+##  3rd Qu.: 7.498                            3rd Qu.: 3.000       
+##  Max.   :14.632                            Max.   :15.000       
+##                                                                 
+##  TOTAL_CONTRACTS_OBRAS_ENTITY PROPORTION_DEVIATION_ENTITY_ALL_TIME
+##  Min.   :    0                Min.   :0.00000                     
+##  1st Qu.:   50                1st Qu.:0.00000                     
+##  Median : 1549                Median :0.00000                     
+##  Mean   : 1570                Mean   :0.05945                     
+##  3rd Qu.: 2930                3rd Qu.:0.09432                     
+##  Max.   :10902                Max.   :0.59649                     
+##                                                                   
+##  PROPORTION_COST_DEVIATION_ENTITY_ALL_TIME
+##  Min.   :0.0000                           
+##  1st Qu.:0.0000                           
+##  Median :0.0000                           
+##  Mean   :0.0877                           
+##  3rd Qu.:0.1587                           
+##  Max.   :0.7000                           
+##                                           
+##  PROPORTION_TIME_DEVIATION_ENTITY_ALL_TIME
+##  Min.   :0.00000                          
+##  1st Qu.:0.00000                          
+##  Median :0.00000                          
+##  Mean   :0.09212                          
+##  3rd Qu.:0.15625                          
+##  Max.   :0.76190                          
+##                                           
+##  PROJECT_INTENSITY_NORM_ENTITY_ALL_TIME AWARD_GROWTH_ORIG_ENTITY_ALL_TIME
+##  Min.   : 0.000                         Min.   :-0.0378148               
+##  1st Qu.: 1.208                         1st Qu.:-0.0019244               
+##  Median : 1.752                         Median :-0.0016884               
+##  Mean   : 3.380                         Mean   :-0.0027001               
+##  3rd Qu.: 4.924                         3rd Qu.:-0.0009887               
+##  Max.   :18.841                         Max.   : 0.0200528               
+##                                                                          
+##  TOTAL_CONTRACTS_OBRAS_CONT PROPORTION_DEVIATION_CONT_ALL_TIME
+##  Min.   : 0.0000            Min.   :0.000000                  
+##  1st Qu.: 0.0000            1st Qu.:0.000000                  
+##  Median : 0.0000            Median :0.000000                  
+##  Mean   : 0.3588            Mean   :0.004002                  
+##  3rd Qu.: 0.0000            3rd Qu.:0.000000                  
+##  Max.   :53.0000            Max.   :1.000000                  
+##                                                               
+##  PROPORTION_COST_DEVIATION_CONT_ALL_TIME
+##  Min.   :0.000000                       
+##  1st Qu.:0.000000                       
+##  Median :0.000000                       
+##  Mean   :0.006764                       
+##  3rd Qu.:0.000000                       
+##  Max.   :1.000000                       
+##                                         
+##  PROPORTION_TIME_DEVIATION_CONT_ALL_TIME PROJECT_INTENSITY_NORM_CONT_ALL_TIME
+##  Min.   :0.000000                        Min.   : 0.0000                     
+##  1st Qu.:0.000000                        1st Qu.: 0.0000                     
+##  Median :0.000000                        Median : 0.0000                     
+##  Mean   :0.006947                        Mean   : 0.1272                     
+##  3rd Qu.:0.000000                        3rd Qu.: 0.0000                     
+##  Max.   :1.500000                        Max.   :14.4162                     
+##                                                                              
+##  AWARD_GROWTH_ORIG_CONT_ALL_TIME REGION_EJECUTION   DEPT_COD_EJECUTION
+##  Min.   :-0.0774115              Length:2118        Min.   : 5.00     
+##  1st Qu.: 0.0000000              Class :character   1st Qu.:11.00     
+##  Median : 0.0000000              Mode  :character   Median :11.00     
+##  Mean   :-0.0001066                                 Mean   :22.03     
+##  3rd Qu.: 0.0000000                                 3rd Qu.:25.00     
+##  Max.   : 0.0028174                                 Max.   :99.00     
+##                                                     NA's   :1         
+##  DEPARTMENT_EJECUTION MUN_COD_EJECUTION MUNICIPALITY_EJECUTION      LNG        
+##  Length:2118          Min.   : 5001     Length:2118            Min.   :-78.67  
+##  Class :character     1st Qu.:11001     Class :character       1st Qu.:-74.21  
+##  Mode  :character     Median :11001     Mode  :character       Median :-74.21  
+##                       Mean   :22233                            Mean   :-74.29  
+##                       3rd Qu.:25178                            3rd Qu.:-74.21  
+##                       Max.   :99001                            Max.   :-68.04  
+##                       NA's   :1                                NA's   :4       
+##       LAT             COD_DEPT     ECONOMIC_IMPORTANCE
+##  Min.   : 0.3207   Min.   : 5001   Min.   :    13.74  
+##  1st Qu.: 4.3168   1st Qu.:11001   1st Qu.:   172.91  
+##  Median : 4.3168   Median :11001   Median :217479.05  
+##  Mean   : 4.8611   Mean   :22130   Mean   :115567.70  
+##  3rd Qu.: 5.3767   3rd Qu.:25168   3rd Qu.:217479.05  
+##  Max.   :11.2432   Max.   :99001   Max.   :217479.05  
+##  NA's   :4         NA's   :4                          
+##  OPEN_TRANSPARENCE_GOBERMENT TRANSPORT_INVESTMENT FISCAL_DESEMPENO
+##  Min.   :25.58               Min.   :1.230e+08    Min.   :48.81   
+##  1st Qu.:85.42               1st Qu.:1.206e+09    1st Qu.:64.19   
+##  Median :98.49               Median :5.422e+11    Median :81.04   
+##  Mean   :90.34               Mean   :2.918e+11    Mean   :73.17   
+##  3rd Qu.:98.49               3rd Qu.:5.422e+11    3rd Qu.:81.04   
+##  Max.   :99.05               Max.   :5.889e+11    Max.   :81.04   
+##                                                                   
+##  PRESIDENTIAL_PERIOD REGIONAL_PERIOD       QUARTER 
+##  Length:2118         Length:2118        Min.   :1  
+##  Class :character    Class :character   1st Qu.:2  
+##  Mode  :character    Mode  :character   Median :3  
+##                                         Mean   :3  
+##                                         3rd Qu.:4  
+##                                         Max.   :4  
+## 
+\end{verbatim}
+
+\end{document}

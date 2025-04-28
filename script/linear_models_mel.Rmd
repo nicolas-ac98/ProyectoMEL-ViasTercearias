@@ -2,7 +2,9 @@
 title: "Modelos lineales Proyecto vías rurales"
 author: "Juan David Sanchez, Nicolas Arrieta, Jairo Andrés Moreno"
 date: "2025-04-12"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
 ---
 ## Carga de datos
 Aqui se carga el conjunto datos
@@ -144,7 +146,428 @@ head(datos_vr)
 
 ```
 
+
 ```{r}
-levels(datos_vr)
+#Ahora vamos analizar los datos
+datos_vr <- read.csv("../data/collected_vias_rurales_ve_data_v5.csv")
+summary(datos_vr)
+```
+```{r}
+#En primer lugar se logra concluir que en total hay 2118 proyectos de vías rurales.
+# Y que en la base de datos hay un total de 72 variables.
+# A continuación, se realizará un ánalisis de datos para descartar variables y luego comenzar a realizar modelos de regresión. 
+library(tidyverse)
+
+library(corrplot)
+
+library(GGally)
+
+library(psych)
+```
+
+```{r}
+# Se va analizar que tipos de datos hay en la base datos 
+# Visualizar las variables
+str(datos_vr)
+# Este comando nos permite sumar la cantidad total de NA que hay en cada columna.
+colSums(is.na(datos_vr)) %>% sort(decreasing = TRUE)
+```
+```{r}
+# Se puede concluir que la gran mayoría de las columnas no tienen valores faltantes.
+# Asimismo solo hay 5 variables que tienen datos faltantes
+# LNG 4 ;  LAT 4 ;COD_DEPT 4; DEPT_COD_EJECUTION 1;          MUN_COD_EJECUTION 1
+
+# Nuestro primer criterio es trabajar solo con variables que no tengan valores faltantes.
+# Por eso con el siguiente comando eliminaremos variables que almenos tengan 1 valor faltante
+datos_vr_completos_primer_ajuste_NAS <- datos_vr %>% select(where(~ !any(is.na(.))))
+summary(datos_vr_completos_primer_ajuste_NAS)
+```
+```{r}
+# Se creó la base datos_vr_completos_primer_ajuste_NAS con 2118 observaciones y 67 variables sin valores faltantes.
+# Esto nos permite realizar análisis sin preocuparnos por datos perdidos.
+datos_numericos_vr <- datos_vr_completos_primer_ajuste_NAS %>% select(where(is.numeric))
+matriz_cor_datos_numericos_vr <- cor(datos_numericos_vr, use = "pairwise.complete.obs")
+corrplot(matriz_cor_datos_numericos_vr, method = "color", tl.cex = 0.7, number.cex = 0.5)
+```
+```{r}
+# Fue muy mala idea crear un gráfico todo se sobrepuso, se ve caótico por la cantidad de variables.
+# El valor de 0.85 es un valor de correlación, muy alto este valor fue seleccionado por el equipo de investigación.
+which(abs(matriz_cor_datos_numericos_vr) > 0.85 & abs(matriz_cor_datos_numericos_vr) < 1, arr.ind = TRUE)
+
+```
+```{r}
+# Es importante comprender que row es el número de la fila de la matriz de correlación es decir la primer variable
+# Col hace referencia al número de la columna de esa matriz de correlación es decir la segunda variable
+#Hay en total 55 que presentaron altas correlaciones se mostrarán los resultados y se irá tomando decisiones para ir eliminando.
+ 
+#Parte1#row col
+# CONTRACT_VALUE_ORIG                         2   1
+# Es decir que CONTRACT_VALUE_ORIG tiene alta correlación con ESTIMATED_COST_ORIG , se dejará solo ESTIMATED_COST_ORIG.
+
+# Parte 2 #                                 row   col
+# FINAL_COST_ORIG                             4   1
+# FINAL_COST_ORIG  tiene una alta correlación con  ESTIMATED_COST_ORIG, se dejará ESTIMATED_COST_ORIG
+
+#Parte 3#                                     row   col
+# ESTIMATED_COST_NORM                         8   1
+# ESTIMATED_COST_NORM tiene una alta correlación con  ESTIMATED_COST_ORIG, se dejará ESTIMATED_COST_ORIG
+#Parte 4#                               row  col
+# CONTRACT_VALUE_NORM                    9   1
+# tiene una alta correlación con ESTIMATED_COST_ORIG, se dejará ESTIMATED_COST_ORIG
+
+
+#Parte 5#                              row  col
+# FINAL_COST_NORM                       11   1
+# tiene una alta correlación con ESTIMATED_COST_ORIG, se dejará ESTIMATED_COST_ORIG
+
+
+# Parte 6
+#  ESTIMATED_COST_ORIG row  col
+                        # 1    2
+#tiene una alta correlación con CONTRACT_VALUE_ORIG, fue lo mismo que arriba, se deja Estimated_Cost_Orig
+
+
+# Parte 7
+# FINAL_COST_ORIG row col
+#                 4     2
+#tiene una alta correlación con CONTRACT_VALUE_ORIG, se eliminaron ambas porque dejamos Estimated_Cost Orig.
+
+# Parte 8
+# ESTIMATED_COST_NORM  row col
+#                       8   2
+# tiene altisima correlación con CONTRACT_VALUE_ORIG
+# se eliminaron ambas
+
+
+# Parte 9
+# CONTRACT_VALUE_NORM row col
+#                       9 2
+# Ya se había eliminado
+
+# Parte 10
+# FINAL_COST_NORM  row col
+# Ya se había eliminado esta variable
+
+# Parte 11
+# ADDITIONAL_COST_NORM row col
+#                        10 3
+# Tiene altisima correlación con ADDITIONAL_COST_ORIG
+# Por cuestiones de conveniencia se eliminara ADDITIONAL_COST_NORM, para manejar con las mismas unidades
+
+# Parte 12
+# ESTIMATED_COST_ORIG
+# Tiene altisima correlación con Final_Cost_Orig
+# Ya se había eliminado Final_cost_orig, es decir queda Final_Cost_Orig
+
+#Parte 13,14,15 y 16 
+# Ya se habian eliminado estas variables que tienen relación con Final_Cost_Origi 
+
+#Parte 17      row col
+# ID ADJUDICACIÓN
+#               7   5
+# tiene altisima correlación con YEAR, se tomo la decisión de eliminar la ID ADJUDICACIÓN, pues YEAR brinda más información para el ánalisis.
+
+#Parte 18     row col
+# FINAL_DEAD LINE
+#               13   6
+# tiene altisima correlación con ORIGINAL_DEADLINE, se tomo la decisión de eliminar  FINAL_DEAD LINE, porque se manejara la mismas variables que se llamen Orig (referencia a original)
+
+# Parte del ánalisis de correlaciones de la parte  19 a la 36 ya se habían eliminado esas variables, es decir que no tiene razón de analizar esas correlaciones.
+
+# Parte 37     row col
+#              15  14 
+#  PROJECT_INTENSITY_ORIG
+# tiene altisima correlación con PROJECT_INTENSITY_NORM.
+# Se tomo la decisión de eliminar PROJECT_INTENSITY_NORM. 
+
+#De los análisis de correlaciones desde la parte 38 hasta la 55 el resumen para eliminar variables es:
+#   PROPORTION_COST_DEVIATION_ENTITY_ALL_TIME,PROPORTION_TIME_DEVIATION_ENTITY_ALL_TIME,  PROPORTION_COST_DEVIATION_ENTITY_ALL_TIME, NUM_PENALTIES_ENTIDAD,ECONOMIC_IMPORTANCE,FISCAL_DESEMPENO 
+
+
+
+```
+
+```{r}
+# Cargar librerías necesarias
+library(tidyverse)
+library(dplyr)
+
+# Crear lista de variables a eliminar
+variables_a_eliminar <- c(
+  "CONTRACT_VALUE_ORIG",
+  "FINAL_COST_ORIG",
+  "ESTIMATED_COST_NORM",
+  "CONTRACT_VALUE_NORM",
+  "FINAL_COST_NORM",
+  "ADDITIONAL_COST_NORM",
+  "ESTIMATED_COST_ORIG",
+  "ID_ADJUDICACION",
+  "FINAL_DEADLINE",
+  "PROJECT_INTENSITY_NORM",
+  "PROPORTION_COST_DEVIATION_ENTITY_ALL_TIME",
+  "PROPORTION_TIME_DEVIATION_ENTITY_ALL_TIME",
+  "NUM_PENALTIES_ENTIDAD",
+  "ECONOMIC_IMPORTANCE",
+  "FISCAL_DESEMPENO",
+  "PROPORTION_COST_DEVIATION_CONT_ALL_TIME"  
+)
+
+
+# Crear nueva base de datos eliminando esas variables
+datos_vr_segundo_ajuste <- datos_vr_completos_primer_ajuste_NAS %>% 
+  select(-all_of(variables_a_eliminar))
+
+```
+```{r}
+summary(datos_vr_segundo_ajuste)
+length(datos_vr_segundo_ajuste)
+```
+```{r}
+# Se realizará un último análisis de variables númericas con respecto a correlaciones, de acuerdo con 
+# Universidad Tecnológica de Pereira, Facultad Ciencias de la Salud, Programa Ciencias del Deporte y la Recreación. (1984). Análisis de Correlaciones.
+# Menciona que correlaciones entre 0.4 – 0.6 es Moderada
+# Por tal razón, variables con correlaciones mayores a 0.4 se eliminaran para así tener correlaciones bajas, muy bajas o nulas.
+# Seleccionar solo variables numéricas de la nueva base
+datos_numericos_segundo_ajuste <- datos_vr_segundo_ajuste %>% 
+  select(where(is.numeric))
+
+# Calcular la nueva matriz de correlaciones
+matriz_cor_segundo_ajuste <- cor(datos_numericos_segundo_ajuste, use = "pairwise.complete.obs")
+
+# Buscar correlaciones moderadas (mayores a 0.4 y menores a 0.6)
+correlaciones_moderadas <- which(
+  abs(matriz_cor_segundo_ajuste) > 0.4 & abs(matriz_cor_segundo_ajuste) < 0.6, 
+  arr.ind = TRUE
+)
+
+# Mostrar el resultado
+correlaciones_moderadas
+
+
+```
+```{r}
+# Para el ánalis parte 1 hasta la 5  
+# Se eliminará las variables TIME_DEVIATION,CONTRACT_VALUE_LOGNORM, 
+
+# Para la parte 6 hasta la 7 se eliminaran las variables
+# Se eliminarán PROJECT_INTENSITY_NORM_ENTITY_ALL_TIME, OPEN_TRANSPARENCE_GOBERMENT
+
+# Para la parte 8 a la 10
+# Se eliminaran las variables
+#PROPORTION_DEVIATION_ENTITY_ALL_TIME,TRANSPORT_INVESTMENT
+ # Para la parte 11 a la 13
+# Ya se eliminaron las variables con correlación moderada
+
+# Para las demás se eliminaron las siguientes variables
+# TOTAL_CONTRACTS_OBRAS_CONT
+
+
+```
+```{r}
+# Crear lista actualizada de variables a eliminar
+variables_a_eliminar_moderadas <- c(
+  "TIME_DEVIATION",
+  "CONTRACT_VALUE_LOGNORM",
+  "PROJECT_INTENSITY_NORM_ENTITY_ALL_TIME",
+  "OPEN_TRANSPARENCE_GOBERMENT",
+  "PROPORTION_DEVIATION_ENTITY_ALL_TIME",
+  "TRANSPORT_INVESTMENT",
+  "TOTAL_CONTRACTS_OBRAS_CONT",
+  "PROPORTION_DEVIATION_CONT_ALL_TIME",
+  "PROJECT_INTENSITY_NORM_CONT_ALL_TIME"
+)
+
+# Crear nueva base de datos eliminando las variables indicadas
+datos_vr_tercer_ajuste <- datos_vr_segundo_ajuste %>%
+  select(-all_of(variables_a_eliminar_moderadas))
+
+# Verificar resumen de la nueva base
+summary(datos_vr_tercer_ajuste)
+
+# Contar número de variables después del ajuste
+length(datos_vr_tercer_ajuste)
+```
+```{r}
+# Seleccionar solo variables numéricas de la nueva base del tercer ajuste
+datos_numericos_tercer_ajuste <- datos_vr_tercer_ajuste %>%
+  select(where(is.numeric))
+
+# Calcular la nueva matriz de correlaciones
+matriz_cor_tercer_ajuste <- cor(datos_numericos_tercer_ajuste, use = "pairwise.complete.obs")
+
+# Buscar correlaciones moderadas (mayores a 0.4 y menores a 0.6)
+correlaciones_moderadas_tercer_ajuste <- which(
+  abs(matriz_cor_tercer_ajuste) > 0.4 & abs(matriz_cor_tercer_ajuste) < 0.6,
+  arr.ind = TRUE
+)
+
+# Mostrar resultado
+correlaciones_moderadas_tercer_ajuste
+```
+```{r}
+# En términos de análisis se dejo esas dos ultimas variables
+summary(datos_vr_tercer_ajuste)
+length(datos_vr_tercer_ajuste)
+view(datos_vr_tercer_ajuste)
+# Se creó la base datos_vr_tercer_ajuste con 2118 observaciones y 42 variables con correlaciones bajas entre las variables numericas, ahora se realizará un análisis con las variables categoricas.
+```
+
+
+```{r}
+# Exportar la base datos_vr_tercer_ajuste a un archivo CSV
+write.csv(datos_vr_tercer_ajuste, "datos_vr_tercer_ajuste.csv", row.names = FALSE)
+```
+```{r}
+# Seleccionar únicamente las variables categóricas
+datos_categoricos_tercer_ajuste <- datos_vr_tercer_ajuste %>% 
+  select(where(is.character))
+
+# Verificar cuáles columnas son categóricas
+str(datos_categoricos_tercer_ajuste)
+
+# Opcional: ver un resumen general de las variables categóricas
+summary(datos_categoricos_tercer_ajuste)
+```
+
+
+```{r}
+# Hay en total 2118 observaciones y 30 variables no númericas
+
+```
+
+```{r}
+# Análisis de relaciones categóricas
+# Crear todas las combinaciones posibles de pares de variables
+combinaciones <- combn(names(datos_categoricos_tercer_ajuste), 2, simplify = FALSE)
+
+# Crear una lista para guardar los resultados del test de Chi-cuadrado
+resultados_chi <- list()
+
+# Realizar la prueba de Chi-cuadrado para cada par de variables
+for (par in combinaciones) {
+  tabla <- table(datos_categoricos_tercer_ajuste[[par[1]]], datos_categoricos_tercer_ajuste[[par[2]]])
+  
+  # Solo se hace chi-cuadrado si hay suficientes observaciones
+  if (all(dim(tabla) > 1)) {
+    chi_test <- chisq.test(tabla, simulate.p.value = TRUE, B = 10000) # Simular p-valor por si hay frecuencias bajas
+    resultados_chi[[paste(par, collapse = " vs ")]] <- chi_test$p.value
+  }
+}
+
+# Convertir los resultados en un data frame
+resultados_chi_df <- enframe(resultados_chi, name = "Variables", value = "p_value")
+
+# Mostrar resultados donde p-value < 0.05 (relación significativa)
+resultados_significativos <- resultados_chi_df %>% 
+  filter(p_value < 0.05) %>% 
+  arrange(p_value)
+
+# Mostrar resultados
+print(resultados_significativos)
+
+# (Opcional) Ver el total de combinaciones con dependencia significativa
+cat("Total de combinaciones significativas:", nrow(resultados_significativos))
+```
+```{r}
+# Variables no numéricas que se decidieron eliminar, el chunk 31 se demoró una eternidad entonces para hacer análisis más rápido se decidió eliminar las siguientes variables teniendo en cuenta los conocimientos previos que hay con respecto a los datos.
+variables_a_eliminar_categoricas <- c(
+  "CONTRACT_ID", 
+  "ENTITY_NAME", 
+  "CONTRACT_OBJECT", 
+  "OBJETC_DETAIL", 
+  "URLPROCESO", 
+  "NIT_ENTIDAD", 
+  "ID_CONTRATISTA", 
+  "NOM_CONTRATISTA", 
+  "MUNICIPALITY", 
+  "REGION", 
+  "OWNER", 
+  "CONTRCT_MONTH_AT",
+  "MUNICIPALITY_TYPE",
+"DPTO_MUN_CONTRATISTA",
+"REGIONAL_PERIOD",
+"REGION_EJECUTION",
+"DEPARTMENT",
+"MUNICIPALITY_EJECUTION"
+)
+
+# Crear nueva base de datos sin esas variables
+datos_vr_tercer_ajuste_categoricas <- datos_vr_tercer_ajuste %>%
+  select(-all_of(variables_a_eliminar_categoricas))
+
+# Verificar dimensiones de la nueva base
+dim(datos_vr_tercer_ajuste_categoricas)
+view(datos_vr_tercer_ajuste_categoricas)
+```
+```{r}
+# En total hasta este momento hay 24 variables, sin embargo falta analizar correlaciones con respecto a las no númericas, se usará la prueba Chi-cuadrado.
+# 1. Filtrar solo las variables categóricas
+datos_categoricas_only <- datos_vr_tercer_ajuste_categoricas %>% 
+  select(where(is.character))  # Solo columnas tipo texto (categóricas)
+
+# 2. Crear una lista vacía para almacenar los resultados
+resultados_chi <- list()
+
+# 3. Hacer el test de Chi-cuadrado solo para combinaciones categóricas
+for (i in 1:(ncol(datos_categoricas_only) - 1)) {
+  for (j in (i + 1):ncol(datos_categoricas_only)) {
+    
+    # Crear tabla de contingencia
+    tabla <- table(datos_categoricas_only[[i]], datos_categoricas_only[[j]])
+    
+    # Aplicar test de Chi-cuadrado solo si hay más de una fila y columna
+    if (all(dim(tabla) > 1)) {
+      chi_result <- suppressWarnings(chisq.test(tabla))  # (opcional) suprimir warnings por frecuencias bajas
+      
+      # Guardar resultados
+      resultados_chi[[paste(colnames(datos_categoricas_only)[i], 
+                            colnames(datos_categoricas_only)[j], sep = " vs ")]] <- chi_result$p.value
+    }
+  }
+}
+
+# 4. Convertir lista a un dataframe y desenlistar p_value
+resultados_chi_df <- enframe(resultados_chi, name = "Par_Variables", value = "p_value") %>%
+  mutate(p_value = unlist(p_value)) %>%   # <- aquí desenlistamos
+  arrange(p_value)
+
+# 5. Filtrar pares con p < 0.05
+resultados_chi_significativos <- resultados_chi_df %>%
+  filter(p_value < 0.05)
+
+# 6. Mostrar resultados
+print(resultados_chi_significativos)
+
+
+```
+
+```{r}
+
+# Cargar la librería
+library(writexl)
+
+# Guardar los resultados en un archivo Excel
+write_xlsx(resultados_chi_significativos, path = "resultados_chi_significativos2.xlsx")
+
+```
+
+```{r}
+view(datos_vr_tercer_ajuste_categoricas)
+summary(datos_vr_tercer_ajuste_categoricas)
+```
+
+#Ahora mirar variables que no son numericas para convertirlas en as.factor si tienen bastantes niveles.
+```{r}
+datos_vr_parahacermodelos<-datos_vr_tercer_ajuste_categoricas
+view(datos_vr_parahacermodelos)
+as.factor(datos_vr_parahacermodelos$PROCESS_TYPE)
+as.factor(datos_vr_parahacermodelos$MUNICIPIO_EJECUCION)
+as.factor(datos_vr_parahacermodelos$DEVIATION_TYPE)
+as.factor(datos_vr_parahacermodelos$DEPARTMENT_EJECUTION)
+datos_vr_parahacermodelos
+```
+```{r}
+# Guardar el archivo en formato Excel
+write_xlsx(datos_vr_parahacermodelos, path = "datos_vr_parahacermodelos.xlsx")
 ```
 
