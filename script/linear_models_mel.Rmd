@@ -554,7 +554,7 @@ ggplot(datos_vr, aes(x = AWARD_GROWTH_ORIG_CONT_ALL_TIME)) +
 
 
 ```{r}
-# Ahora para la variable de duración del proyecto, se usará la variable 
+# Ahora para la variable de duración de project intensity, se usará la variable 
 #datos_vr$FINAL_DEADLINE
 # Analizaremos la parte de PROJECT INTENSITY
 #datos_vr$PROJECT_INTENSITY_NORM
@@ -655,14 +655,6 @@ p8 <- ggplot(datos_vr, aes(x = PROJECT_INTENSITY_LOG__CONT_ALL_TIME)) +
   theme_minimal()
 print(p8)
 ```
-
-
-
-
-
-
-
-
 # En términos generales todas las variables relacionadas a PROJECT INTENSITY, si mejoraron su distribuciones debido a la transformación realizada.
 
 # Ahora se analizara las correlaciones entre las nuevas variables transformadas.
@@ -700,38 +692,175 @@ print(cor_df)
 ```
 # Se eliminará PROJECT_INTENSITY_ORIG_LOG del modelo, dado que su correlación con PROJECT_INTENSITY_NORM_LOG es muy alta (r ≈ 0.987). La versión normalizada será conservada por ser más robusta a escala y comparable entre contratos.
 
+
 #Creación del primer MODELO MÁXIMO DE REGRESIÓN LINEAL.
+
+
+
+
+
+
+
+
+
+######
+
 ```{r}
-modelo_ampliado <- lm(COST_DEVIATION ~ 
-                       PROJECT_INTENSITY_ORIG_LOG +
-                       PROJECT_INTENSITY_NORM_LOG +
-                       PROJECT_INTENSITY_LOG_ENTITY_ALL_TIME +
-                       PROJECT_INTENSITY_LOG__CONT_ALL_TIME +
-                       AWARD_GROWTH +
-                       AWARD_GROWTH_ORIG_ENTITY_ALL_TIME +
-                       AWARD_GROWTH_ORIG_CONT_ALL_TIME +
-                       CONTRACT_VALUE_ORIG +
-                       CONTRACT_VALUE_LOGNORM +
-                       CONTRACT_VALUE_NORM +
-                       FINAL_DEADLINE,
-                     data = datos_vr)
+# Paso 1: Definir función log segura (ya debes haberla corrido antes)
+log_transform_safe <- function(x) {
+  ifelse(x > 0, log(x), NA)
+}
+
+# Paso 2: Crear variables transformadas con nombres coherentes
+datos_vr$PROJECT_INTENSITY_ORIG_LOG <- log_transform_safe(datos_vr$PROJECT_INTENSITY_ORIG)
+datos_vr$PROJECT_INTENSITY_NORM_LOG <- log_transform_safe(datos_vr$PROJECT_INTENSITY_NORM)
+datos_vr$PROJECT_INTENSITY_LOG_ENTITY_ALL_TIME <- log_transform_safe(datos_vr$PROJECT_INTENSITY_NORM_ENTITY_ALL_TIME)
+datos_vr$PROJECT_INTENSITY_LOG_CONT_ALL_TIME <- log_transform_safe(datos_vr$PROJECT_INTENSITY_NORM_CONT_ALL_TIME)  # corregido el doble guion bajo
+
+# Paso 3: Crear vector de variables usadas
+variables_usadas <- c(
+  "COST_DEVIATION", "TIME_DEVIATION",  
+  "PROJECT_INTENSITY_ORIG_LOG", "PROJECT_INTENSITY_NORM_LOG",
+  "PROJECT_INTENSITY_LOG_ENTITY_ALL_TIME", "PROJECT_INTENSITY_LOG_CONT_ALL_TIME",
+  "AWARD_GROWTH", "AWARD_GROWTH_ORIG_ENTITY_ALL_TIME", "AWARD_GROWTH_ORIG_CONT_ALL_TIME",
+  "CONTRACT_VALUE_ORIG", "CONTRACT_VALUE_LOGNORM", "CONTRACT_VALUE_NORM", 
+  "FINAL_DEADLINE"
+)
+
+# Paso 4: Filtrar base sin NA en esas variables
+library(dplyr)
+
+datos_completos <- datos_vr %>%
+  select(all_of(variables_usadas)) %>%
+  drop_na()
+
+
+```
+#####################
+```{r}
+modelo_completo_cost <- lm(
+  formula = COST_DEVIATION ~ 
+    PROJECT_INTENSITY_ORIG_LOG + 
+    PROJECT_INTENSITY_NORM_LOG + 
+    PROJECT_INTENSITY_LOG_ENTITY_ALL_TIME + 
+    PROJECT_INTENSITY_LOG_CONT_ALL_TIME + 
+    AWARD_GROWTH + 
+    AWARD_GROWTH_ORIG_ENTITY_ALL_TIME + 
+    AWARD_GROWTH_ORIG_CONT_ALL_TIME + 
+    CONTRACT_VALUE_ORIG + 
+    CONTRACT_VALUE_LOGNORM + 
+    CONTRACT_VALUE_NORM + 
+    FINAL_DEADLINE,
+  data = datos_completos
+)
 
 # Ver el resumen del modelo
-summary(modelo_ampliado)
+summary(modelo_completo_cost)
+
+
 ```
+############################
+
 ```{r}
-modelo_reducido <- lm(COST_DEVIATION ~ 
-                       PROJECT_INTENSITY_ORIG_LOG +
-                       PROJECT_INTENSITY_NORM_LOG +
-                       PROJECT_INTENSITY_LOG_ENTITY_ALL_TIME +
-                       AWARD_GROWTH_ORIG_ENTITY_ALL_TIME +
-                       AWARD_GROWTH_ORIG_CONT_ALL_TIME +
-                       CONTRACT_VALUE_LOGNORM +
-                       CONTRACT_VALUE_NORM +
-                       FINAL_DEADLINE,
-                     data = datos_vr)
+library(car)
+
+# Evaluar multicolinealidad con VIF (Variance Inflation Factor)
+vif(modelo_completo_cost)
+
+```
+
+#####
+###
+##Modelo reducido 
+```{r}
+modelo_reducido_final_cost_desviation_cuantia <-  lm(
+  formula = COST_DEVIATION ~ 
+    PROJECT_INTENSITY_LOG_ENTITY_ALL_TIME +
+    AWARD_GROWTH_ORIG_ENTITY_ALL_TIME +
+    CONTRACT_VALUE_LOGNORM +
+    FINAL_DEADLINE,
+  data = datos_completos
+)
+
+
+# Ver resumen del nuevo modelo reducido
+summary(modelo_reducido_final_cost_desviation_cuantia)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#####################TIME DESVIATION
+```{r}
+modelo_completo_time <- lm(
+  formula = TIME_DEVIATION ~ 
+    PROJECT_INTENSITY_ORIG_LOG + 
+    PROJECT_INTENSITY_NORM_LOG + 
+    PROJECT_INTENSITY_LOG_ENTITY_ALL_TIME + 
+    PROJECT_INTENSITY_LOG_CONT_ALL_TIME + 
+    AWARD_GROWTH + 
+    AWARD_GROWTH_ORIG_ENTITY_ALL_TIME + 
+    AWARD_GROWTH_ORIG_CONT_ALL_TIME + 
+    CONTRACT_VALUE_ORIG + 
+    CONTRACT_VALUE_LOGNORM + 
+    CONTRACT_VALUE_NORM + 
+    FINAL_DEADLINE,
+  data = datos_completos
+)
+
+# Ver el resumen del modelo para TIME_DEVIATION
+summary(modelo_completo_time)
+
+```
+###Solo se cogeran variables que sean algo significativas
+
+```{r}
+modelo_time_reducido_signif <- lm(
+  formula = TIME_DEVIATION ~ 
+    PROJECT_INTENSITY_ORIG_LOG +
+    PROJECT_INTENSITY_NORM_LOG +
+    CONTRACT_VALUE_LOGNORM +
+    CONTRACT_VALUE_NORM +
+    FINAL_DEADLINE,
+  data = datos_completos
+)
 
 # Ver resumen del modelo reducido
-summary(modelo_reducido)
+summary(modelo_time_reducido_signif)
+
 ```
-###Ultima parte que he realizado 14/05/2025 
+###Modelo time final factor caracteristicas del proyecto
+```{r}
+modelo_time_final <- lm(
+  formula = TIME_DEVIATION ~ 
+    PROJECT_INTENSITY_NORM_LOG +
+    CONTRACT_VALUE_LOGNORM +
+    CONTRACT_VALUE_NORM +
+    FINAL_DEADLINE,
+  data = datos_completos
+)
+
+# Ver resumen del modelo final
+summary(modelo_time_final)
+
+```
+
+## Vamos a mirar el VIF
+
+```{r}
+# Calcular VIF del modelo final
+vif(modelo_time_final)
+```
+
+
