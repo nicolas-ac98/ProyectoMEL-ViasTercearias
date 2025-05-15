@@ -14,140 +14,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r}
-datos_vr <- read.csv("../data/collected_vias_rurales_ve_data_v5.csv")
-summary(datos_vr)
-```
-```{r}
-cols <- c('COST_DEVIATION','CONTRACT_VALUE_LOGNORM',
-          'ORIGINAL_DEADLINE','AWARD_GROWTH','PROJECT_INTENSITY_NORM',
-          'TOTAL_CONTRACTS_OBRAS_ENTITY','PROPORTION_DEVIATION_ENTITY_ALL_TIME',
-          'PROPORTION_COST_DEVIATION_ENTITY_ALL_TIME', 'PROPORTION_TIME_DEVIATION_ENTITY_ALL_TIME',
-          'PROJECT_INTENSITY_NORM_ENTITY_ALL_TIME',
-          'AWARD_GROWTH_ORIG_ENTITY_ALL_TIME','TOTAL_CONTRACTS_OBRAS_CONT',
-          'PROPORTION_DEVIATION_CONT_ALL_TIME','PROPORTION_COST_DEVIATION_CONT_ALL_TIME',
-          'PROPORTION_TIME_DEVIATION_CONT_ALL_TIME',
-          'PROJECT_INTENSITY_NORM_CONT_ALL_TIME', 'AWARD_GROWTH_ORIG_CONT_ALL_TIME',
-          'ECONOMIC_IMPORTANCE', 'OPEN_TRANSPARENCE_GOBERMENT',
-          'TRANSPORT_INVESTMENT', 'FISCAL_DESEMPENO')
-
-correlation_matrix <- cor(datos_vr[, cols])
-```
-
-
-```{r}
-library(ggplot2)
-
-# Crear scatter plot
-ggplot(datos_vr[  datos_vr$COST_DEVIATION > 0,], aes(x = COST_DEVIATION*100)) +
-# ggplot(datos_vr, aes(x = PROPORTION_DEVIATION_CONT_ALL_TIME)) +
-# ggplot(datos_vr, aes(x = log(PROJECT_INTENSITY_NORM_ENTITY_ALL_TIME + 1))) +
-  geom_histogram(color = "black", size = 1) +  # Puntos
-    labs(title = "Desviación en costo en contratos de vías tercearias",
-       x = "Desviación en costo (%)",
-       y = "Freceuncia") +
-  theme_minimal()  # Tema limpio
-```
-
-```{r}
-datos_vr$PROJECT_INTENSITY_LOGNORM <- log(datos_vr$PROJECT_INTENSITY_NORM)
-datos_vr$TOTAL_CONTRACTS_OBRAS_ENTITY_LOG <- log(datos_vr$TOTAL_CONTRACTS_OBRAS_ENTITY + 1)
-datos_vr$ECONOMIC_IMPORTANCE_LOG <- log(datos_vr$ECONOMIC_IMPORTANCE)
-datos_vr$TRANSPORT_INVESTMENT_LOG <- log(datos_vr$TRANSPORT_INVESTMENT)
-```
-
-
-```{r}
-cols_model_num <- c('ORIGINAL_DEADLINE','AWARD_GROWTH','PROJECT_INTENSITY_LOGNORM',
-          'TOTAL_CONTRACTS_OBRAS_ENTITY_LOG','PROPORTION_DEVIATION_ENTITY_ALL_TIME',
-          'PROJECT_INTENSITY_NORM_ENTITY_ALL_TIME',
-          'AWARD_GROWTH_ORIG_ENTITY_ALL_TIME','TOTAL_CONTRACTS_OBRAS_CONT',
-          'PROPORTION_DEVIATION_CONT_ALL_TIME',
-          'PROJECT_INTENSITY_NORM_CONT_ALL_TIME', 'AWARD_GROWTH_ORIG_CONT_ALL_TIME',
-          'ECONOMIC_IMPORTANCE_LOG', 'OPEN_TRANSPARENCE_GOBERMENT',
-          'TRANSPORT_INVESTMENT_LOG',
-          'FISCAL_DESEMPENO')
-
-correlation_matrix <- cor(datos_vr[, cols_model_num])
-
-# Escalar todas las columnas numéricas
-datos_vr_scaled <- as.data.frame(scale(datos_vr[,cols_model_num]))
-
-```
-
-```{r}
-cols_cat <- c('OWNER','PRESIDENTIAL_PERIOD','REGIONAL_PERIOD','QUARTER')
-
-datos_vr_scaled$IS_DEPARTMENT_GOVERNMENT <- ifelse(datos_vr$OWNER == 'DEPARTMENT_GOVERNMENT', 1, 0)
-datos_vr_scaled$IS_PRESIDENTIAL_PERIOD <- ifelse(datos_vr$PRESIDENTIAL_PERIOD == 'True', 1, 0)
-datos_vr_scaled$IS_REGIONAL_PERIOD <- ifelse(datos_vr$REGIONAL_PERIOD == 'True', 1, 0)
-datos_vr_scaled$Q1 <- ifelse(datos_vr$QUARTER == 1, 1, 0)
-datos_vr_scaled$Q2 <- ifelse(datos_vr$QUARTER == 2, 1, 0)
-datos_vr_scaled$Q3 <- ifelse(datos_vr$QUARTER == 3, 1, 0)
-datos_vr_scaled$Q4 <- ifelse(datos_vr$QUARTER == 4, 1, 0)
-
-datos_vr_scaled$LP <- ifelse(datos_vr$PROCESS_TYPE == 'LICITACION PUBLICA', 1, 0)
-
-dummy_var <- c('IS_DEPARTMENT_GOVERNMENT','IS_PRESIDENTIAL_PERIOD','IS_REGIONAL_PERIOD',
-               'Q1','Q2','Q3','LP'
-               )
-```
-
-## Modelo cost deviation
-
-```{r}
-lm_variables <- c(cols_model_num,dummy_var)
-y_variable <- 'COST_DEVIATION'
-
-total_variables <- c(c(y_variable),lm_variables)
-
-
-datos_vr_scaled$COST_DEVIATION <- datos_vr$COST_DEVIATION
-```
-
-```{r}
-model1 <- lm(formula= COST_DEVIATION ~ ., data=datos_vr_scaled[,total_variables])
-summary(model1)
-```
-
-```{r}
-# Crear dataframe con residuos
-datos_vr$residuos <- residuals(model1)
-datos_vr$ajustados <- fitted(model1)
-
-# Graficar
-ggplot(datos_vr, aes(x = ajustados, y = residuos)) +
-  geom_point(color = "blue") +  # Puntos
-  geom_hline(yintercept = 0, color = "red", linetype = "dashed") +  # Línea en 0
-  labs(title = "Gráfico de Residuales",
-       x = "Valores Ajustados",
-       y = "Residuales") +
-  theme_minimal()
-```
-
-## Modelo time deviation
-
-```{r}
-lm_variables <- c(cols_model_num,dummy_var)
-y_variable <- 'TIME_DEVIATION'
-
-total_variables <- c(c(y_variable),lm_variables)
-
-
-datos_vr_scaled$TIME_DEVIATION <- datos_vr$TIME_DEVIATION
-```
-
-```{r}
-model1 <- lm(formula= TIME_DEVIATION ~ ., data=datos_vr_scaled[datos_vr_scaled$TIME_DEVIATION < 3,total_variables])
-summary(model1)
-```
-
-```{r}
-head(datos_vr)
-
-```
-
-
-```{r}
 #Ahora vamos analizar los datos
 datos_vr <- read.csv("../data/collected_vias_rurales_ve_data_v5.csv")
 summary(datos_vr)
@@ -156,6 +22,8 @@ summary(datos_vr)
 #En primer lugar se logra concluir que en total hay 2118 proyectos de vías rurales.
 # Y que en la base de datos hay un total de 72 variables.
 # A continuación, se realizará un ánalisis de datos para descartar variables y luego comenzar a realizar modelos de regresión. 
+install.packages("ggplot2", dependencies = TRUE, type = "binary")
+library(ggplot2)
 library(tidyverse)
 
 library(corrplot)
@@ -196,8 +64,8 @@ which(abs(matriz_cor_datos_numericos_vr) > 0.85 & abs(matriz_cor_datos_numericos
 
 ```
 ```{r}
-# Es importante comprender que row es el número de la fila de la matriz de correlación es decir la primer variable
-# Col hace referencia al número de la columna de esa matriz de correlación es decir la segunda variable
+# Es importante comprender que row es el número de la fila de la matriz de correlación es decir la primer variable.
+# Col hace referencia al número de la columna de esa matriz de correlación es decir la segunda variable.
 #Hay en total 55 que presentaron altas correlaciones se mostrarán los resultados y se irá tomando decisiones para ir eliminando.
  
 #Parte1#row col
@@ -569,5 +437,301 @@ datos_vr_parahacermodelos
 ```{r}
 # Guardar el archivo en formato Excel
 write_xlsx(datos_vr_parahacermodelos, path = "datos_vr_parahacermodelos.xlsx")
+length(datos_vr_parahacermodelos)
+```
+#########
+##### Ahora se van a probar diversos modelos de regresión lineal, teniendo en cuenta los factores.
+
+# Modelos 1 solo con el nivel de de caracteristicas de proyecto, el cual contiene 5 variables .
+# Cuantia del proyecto, hace referencia al valor en COP con el que se firmó el proyecto.
+# Duración del proyecto, hace referencia al tiempo pactado en días para el desarrollo del proyecto.
+# Project Intensy, hace referencia a la Tasa de intensidad = valor del proyecto/ número de días.
+# Tiene información del proceso de calificación, hace referencia a que la entidad registró la información de los procesos de selección.
+```{r}
+eliminar_na <- function(data) {
+  data_limpia <- na.omit(data)
+  return(data_limpia)
+}
+datos_vr <- eliminar_na(datos_vr)
+
+
+```{r}
+obtener_cuantias <- function(base_completa) {
+  base_cuantias <- base_completa[, c("CONTRACT_VALUE_ORIG", "CONTRACT_VALUE_LOGNORM", "CONTRACT_VALUE_NORM")]
+  return(base_cuantias)
+}
+sub_base <- obtener_cuantias(datos_vr)
+head(sub_base)
+write.csv(sub_base, "cuantias_proyecto.csv", row.names = FALSE)
+```
+# Porque se realizó este paso de colnames, pues nos arrojaba error al usar los nombres, entonces se decidió hacer una base de datos solo con las tres posibles valiables de cuantia del proyecto.
+# Ahora se van a graficar 
+
+```{r}
+if (!require(ggplot2)) install.packages("ggplot2", dependencies = TRUE)
+library(ggplot2)
+library(ggplot2)
+
+# 1. CONTRACT_VALUE_ORIG
+ggplot(datos_vr, aes(x = CONTRACT_VALUE_ORIG)) +
+  geom_histogram(bins = 40, fill = "tomato", color = "black") +
+  labs(
+    title = "Distribución de CONTRACT_VALUE_ORIG",
+    x = "Cuantía original (COP)",
+    y = "Frecuencia"
+  ) +
+  theme_minimal()
+
+# 2. CONTRACT_VALUE_LOGNORM
+ggplot(datos_vr, aes(x = CONTRACT_VALUE_LOGNORM)) +
+  geom_histogram(bins = 40, fill = "skyblue", color = "black") +
+  labs(
+    title = "Distribución de CONTRACT_VALUE_LOGNORM",
+    x = "Logaritmo natural de la cuantía",
+    y = "Frecuencia"
+  ) +
+  theme_minimal()
+
+# 3. CONTRACT_VALUE_NORM
+ggplot(datos_vr, aes(x = CONTRACT_VALUE_NORM)) +
+  geom_histogram(bins = 40, fill = "darkseagreen", color = "black") +
+  labs(
+    title = "Distribución de CONTRACT_VALUE_NORM",
+    x = "Cuantía normalizada",
+    y = "Frecuencia"
+  ) +
+  theme_minimal()
+
+```
+# Con el propósito de corroborar el tipo de distribución de las variables asociadas a la cuantía de los contratos, se generaron histogramas individuales para CONTRACT_VALUE_ORIG, CONTRACT_VALUE_LOGNORM y CONTRACT_VALUE_NORM. Como se observa, la variable original (CONTRACT_VALUE_ORIG) presenta una marcada asimetría positiva, con alta concentración en valores bajos y una cola extendida hacia la derecha, debido a la presencia de contratos con valores extremadamente altos. Al aplicar la transformación logarítmica (CONTRACT_VALUE_LOGNORM), la distribución se estabiliza, mostrando un comportamiento más simétrico y cercano a la normalidad, lo que facilita su uso en modelos estadísticos. Por su parte, la cuantía normalizada (CONTRACT_VALUE_NORM) conserva un sesgo similar al de la escala original
+
+
+
+```{r}
+# Crear un subconjunto solo con las variables relevantes
+sub_base <- datos_vr[, c("AWARD_GROWTH",
+                         "AWARD_GROWTH_ORIG_ENTITY_ALL_TIME",
+                         "AWARD_GROWTH_ORIG_CONT_ALL_TIME")]
+# Matriz de correlación
+correlaciones <- cor(sub_base, use = "complete.obs")
+
+# Visualizar matriz
+print(correlaciones)
+```
+# Aunque las tres variables relacionadas con el crecimiento en la adjudicación (AWARD_GROWTH, AWARD_GROWTH_ORIG_ENTITY_ALL_TIME y AWARD_GROWTH_ORIG_CONT_ALL_TIME) presentan correlaciones muy bajas entre sí, esto sugiere que capturan dimensiones distintas del comportamiento contractual (individual, institucional e histórico del contratista). Por tanto, se conservarán las tres para ser utilizadas en un modelo general que será abordado más adelante.
+#graficas award 
+```{r}
+ggplot(datos_vr, aes(x = AWARD_GROWTH)) +
+  geom_histogram(color = "black", fill = "lightblue", bins = 30) +
+  labs(title = "Histograma de AWARD_GROWTH",
+       x = "AWARD_GROWTH",
+       y = "Frecuencia") +
+  theme_minimal()
 ```
 
+# Grafica 2 AWARD_GROWTH_ORIG_ENTITY_ALL_TIME
+```{r}
+ggplot(datos_vr, aes(x = AWARD_GROWTH_ORIG_ENTITY_ALL_TIME)) +
+  geom_histogram(color = "black", fill = "lightblue", bins = 30) +
+  labs(title = "Histograma de AWARD_GROWTH_ORIG_ENTITY_ALL_TIME",
+       x = "AWARD_GROWTH_ORIG_ENTITY_ALL_TIME",
+       y = "Frecuencia") +
+  theme_minimal()
+```
+# Grafica 3.AWARD_GROWTH_ORIG_CONT_ALL_TIME
+```{r}
+ggplot(datos_vr, aes(x = AWARD_GROWTH_ORIG_CONT_ALL_TIME)) +
+  geom_histogram(color = "black", fill = "lightblue", bins = 30) +
+  labs(title = "Histograma de AWARD_GROWTH_ORIG_CONT_ALL_TIME",
+       x = "AWARD_GROWTH_ORIG_CONT_ALL_TIME",
+       y = "Frecuencia") +
+  theme_minimal()
+```
+
+
+
+
+
+
+```{r}
+# Ahora para la variable de duración del proyecto, se usará la variable 
+#datos_vr$FINAL_DEADLINE
+# Analizaremos la parte de PROJECT INTENSITY
+#datos_vr$PROJECT_INTENSITY_NORM
+#datos_vr$PROJECT_INTENSITY_NORM_CONT_ALL_TIME
+#datos_vr$PROJECT_INTENSITY_NORM_ENTITY_ALL_TIME
+p1 <- ggplot(datos_vr, aes(x = PROJECT_INTENSITY_ORIG)) +
+  geom_histogram(bins = 40, fill = "steelblue", color = "black") +
+  labs(title = "Distribución: PROJECT_INTENSITY_ORIG",
+       x = "Intensidad original", y = "Frecuencia") +
+  theme_minimal()
+
+print(p1)
+```
+#sEGUNDA GRÁFICA DEL PROJECT INTENSITY
+```{r}
+p2 <- ggplot(datos_vr, aes(x = PROJECT_INTENSITY_NORM)) +
+  geom_histogram(bins = 40, fill = "darkorange", color = "black") +
+  labs(title = "Distribución: PROJECT_INTENSITY_NORM",
+       x = "Intensidad normalizada", y = "Frecuencia") +
+  theme_minimal()
+
+print(p2)
+```
+#Tercera gráfica
+
+```{r}
+p3 <- ggplot(datos_vr, aes(x = PROJECT_INTENSITY_NORM_ENTITY_ALL_TIME)) +
+  geom_histogram(bins = 40, fill = "forestgreen", color = "black") +
+  labs(title = "Distribución: ENTITY_ALL_TIME",
+       x = "Promedio entidad", y = "Frecuencia") +
+  theme_minimal()
+
+print(p3)
+```
+# Cuarta gráfica
+```{r}
+p4 <- ggplot(datos_vr, aes(x = PROJECT_INTENSITY_NORM_CONT_ALL_TIME)) +
+  geom_histogram(bins = 40, fill = "purple", color = "black") +
+  labs(title = "Distribución: CONT_ALL_TIME",
+       x = "Promedio contratista", y = "Frecuencia") +
+  theme_minimal()
+
+print(p4)
+
+```
+#En conclusión, las variables relacionadas con la intensidad del proyecto presentan distribuciones altamente asimétricas. Tanto PROJECT_INTENSITY_ORIG como PROJECT_INTENSITY_NORM y PROJECT_INTENSITY_NORM_CONT_ALL_TIME muestran una concentración extrema en valores cercanos a cero, con colas largas hacia la derecha, lo que sugiere la presencia de valores atípicos o una escala muy dispersa. 
+```{r}
+# Evitar log(0) o log(valor negativo)
+log_transform_safe <- function(x) {
+  ifelse(x > 0, log(x), NA)
+}
+
+# Aplicar a todas las variables de PROJECT INTENSITY
+datos_vr$PROJECT_INTENSITY_ORIG_LOG     <- log_transform_safe(datos_vr$PROJECT_INTENSITY_ORIG)
+
+datos_vr$PROJECT_INTENSITY_NORM_LOG     <- log_transform_safe(datos_vr$PROJECT_INTENSITY_NORM)
+
+datos_vr$PROJECT_INTENSITY_LOG_ENTITY_ALL_TIME   <- log_transform_safe(datos_vr$PROJECT_INTENSITY_NORM_ENTITY_ALL_TIME)
+
+
+datos_vr$PROJECT_INTENSITY_LOG__CONT_ALL_TIME     <- log_transform_safe(datos_vr$PROJECT_INTENSITY_NORM_CONT_ALL_TIME)
+```
+
+# Ahora realizaremos sus respectivos Histogramas para ver su comportamiento, con la transformación.
+```{r}
+# 1. Log de PROJECT_INTENSITY_ORIG
+p5 <- ggplot(datos_vr, aes(x = PROJECT_INTENSITY_ORIG_LOG)) +
+  geom_histogram(bins = 40, fill = "steelblue", color = "black") +
+  labs(title = "Log de PROJECT_INTENSITY_ORIG",
+       x = "log(Intensidad original)", y = "Frecuencia") +
+  theme_minimal()
+print(p5)
+```
+```{r}
+# 2. Log de PROJECT_INTENSITY_NORM
+p6 <- ggplot(datos_vr, aes(x = PROJECT_INTENSITY_NORM_LOG)) +
+  geom_histogram(bins = 40, fill = "darkorange", color = "black") +
+  labs(title = "Log de PROJECT_INTENSITY_NORM",
+       x = "log(Intensidad normalizada)", y = "Frecuencia") +
+  theme_minimal()
+print(p6)
+```
+```{r}
+p7 <- ggplot(datos_vr, aes(x = PROJECT_INTENSITY_LOG_ENTITY_ALL_TIME)) +
+  geom_histogram(bins = 40, fill = "forestgreen", color = "black") +
+  labs(title = "Log de ENTITY_ALL_TIME",
+       x = "log(Promedio entidad)", y = "Frecuencia") +
+  theme_minimal()
+print(p7)
+```
+
+```{r}
+# 4. Log de PROJECT_INTENSITY_NORM_CONT_ALL_TIME
+p8 <- ggplot(datos_vr, aes(x = PROJECT_INTENSITY_LOG__CONT_ALL_TIME)) +
+  geom_histogram(bins = 40, fill = "purple", color = "black") +
+  labs(title = "Log de CONT_ALL_TIME",
+       x = "log(Promedio contratista)", y = "Frecuencia") +
+  theme_minimal()
+print(p8)
+```
+
+
+
+
+
+
+
+
+# En términos generales todas las variables relacionadas a PROJECT INTENSITY, si mejoraron su distribuciones debido a la transformación realizada.
+
+# Ahora se analizara las correlaciones entre las nuevas variables transformadas.
+```{r}
+
+
+# Crear subconjunto con las variables logarítmicas
+sub_intensidad_log <- datos_vr[, c("PROJECT_INTENSITY_ORIG_LOG",
+                                   "PROJECT_INTENSITY_NORM_LOG",
+                                   "PROJECT_INTENSITY_LOG_ENTITY_ALL_TIME",
+                                   "PROJECT_INTENSITY_LOG__CONT_ALL_TIME")]
+
+# Eliminar filas con NA
+sub_intensidad_log <- na.omit(sub_intensidad_log)
+
+# Calcular matriz de correlaciones
+correlaciones_log <- cor(sub_intensidad_log, use = "complete.obs")
+
+# Convertir matriz a data frame de pares
+cor_df <- as.data.frame(as.table(correlaciones_log))
+
+# Eliminar correlaciones consigo mismas
+cor_df <- cor_df[cor_df$Var1 != cor_df$Var2, ]
+
+# Filtrar correlaciones absolutas > 0.4 y < 1
+cor_df <- cor_df[abs(cor_df$Freq) > 0.4 & abs(cor_df$Freq) < 1, ]
+
+# Eliminar duplicados simétricos (matriz es simétrica)
+cor_df <- cor_df[!duplicated(t(apply(cor_df[, 1:2], 1, sort))), ]
+
+# Mostrar resultado
+print(cor_df)
+
+
+```
+# Se eliminará PROJECT_INTENSITY_ORIG_LOG del modelo, dado que su correlación con PROJECT_INTENSITY_NORM_LOG es muy alta (r ≈ 0.987). La versión normalizada será conservada por ser más robusta a escala y comparable entre contratos.
+
+#Creación del primer MODELO MÁXIMO DE REGRESIÓN LINEAL.
+```{r}
+modelo_ampliado <- lm(COST_DEVIATION ~ 
+                       PROJECT_INTENSITY_ORIG_LOG +
+                       PROJECT_INTENSITY_NORM_LOG +
+                       PROJECT_INTENSITY_LOG_ENTITY_ALL_TIME +
+                       PROJECT_INTENSITY_LOG__CONT_ALL_TIME +
+                       AWARD_GROWTH +
+                       AWARD_GROWTH_ORIG_ENTITY_ALL_TIME +
+                       AWARD_GROWTH_ORIG_CONT_ALL_TIME +
+                       CONTRACT_VALUE_ORIG +
+                       CONTRACT_VALUE_LOGNORM +
+                       CONTRACT_VALUE_NORM +
+                       FINAL_DEADLINE,
+                     data = datos_vr)
+
+# Ver el resumen del modelo
+summary(modelo_ampliado)
+```
+```{r}
+modelo_reducido <- lm(COST_DEVIATION ~ 
+                       PROJECT_INTENSITY_ORIG_LOG +
+                       PROJECT_INTENSITY_NORM_LOG +
+                       PROJECT_INTENSITY_LOG_ENTITY_ALL_TIME +
+                       AWARD_GROWTH_ORIG_ENTITY_ALL_TIME +
+                       AWARD_GROWTH_ORIG_CONT_ALL_TIME +
+                       CONTRACT_VALUE_LOGNORM +
+                       CONTRACT_VALUE_NORM +
+                       FINAL_DEADLINE,
+                     data = datos_vr)
+
+# Ver resumen del modelo reducido
+summary(modelo_reducido)
+```
+###Ultima parte que he realizado 14/05/2025 
