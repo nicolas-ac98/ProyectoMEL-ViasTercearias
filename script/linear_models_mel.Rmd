@@ -975,13 +975,13 @@ print(new_variables)
 
 ```{r}
 
-modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA <- lm(
+modelo_deviation_time_2 <- lm(
   formula = TIME_DEVIATION ~  PROJECT_INTENSITY_LOG_CONT_ALL_TIME + AWARD_GROWTH + CONTRACT_VALUE_NORM + REGION_EJECUTION + MUNICIPALITY_TYPE + AWARD_GROWTH_ORIG_ENTITY_ALL_TIME + AWARD_GROWTH_ORIG_CONT_ALL_TIME + PROJECT_INTENSITY_NORM_CONT_ALL_TIME + NUM_PENALTIES_ENTIDAD + TOTAL_CONTRACTS_OBRAS_ENTITY + PROPORTION_DEVIATION_ENTITY_ALL_TIME + TOTAL_CONTRACTS_OBRAS_CONT + PROPORTION_DEVIATION_CONT_ALL_TIME + PROCESS_TYPE + ORIGINAL_DEADLINE,
   data = datos_vr2
 )
 
 # Resumen del modelo depurado
-summary(modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA)
+summary(modelo_deviation_time_2)
 ```
 
 
@@ -989,8 +989,8 @@ summary(modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA)
 
 ```{r grafico_residuos_vs_ajustados, echo=TRUE, fig.width=7, fig.height=5}
 # Guardar valores ajustados y residuos
-ajustados <- modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA$fitted.values
-residuos <- modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA$residuals
+ajustados <- modelo_deviation_time_2$fitted.values
+residuos <- modelo_deviation_time_2$residuals
 
 # Gráfico de residuos vs valores ajustados
 plot(
@@ -998,7 +998,7 @@ plot(
   residuos,
   xlab = "Valores ajustados",
   ylab = "Residuos",
-  main = "Residuos vs Valores Ajustados para modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA ",
+  main = "Residuos vs Valores Ajustados para modelo_deviation_time_2 ",
   pch = 20,
   col = "blue"
 )
@@ -1009,280 +1009,167 @@ abline(h = 0, col = "red", lwd = 2)
 ```
 
 ```{r}
-anova(modelo_completo_time_todas, modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA)
-```
-
-
-
-```{r}
-car::vif(modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA)
+anova(modelo_completo_time_todas, modelo_deviation_time_2)
 ```
 ```{r}
-modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA_2 <- lm(
-  formula = TIME_DEVIATION ~ 
-    HAVE_DEVIATION +
-    PROJECT_INTENSITY_LOG_ENTITY_ALL_TIME + PROJECT_INTENSITY_LOG_CONT_ALL_TIME +
-    CONTRACT_VALUE_LOGNORM +
-    AWARD_GROWTH +
-    PROJECT_INTENSITY_NORM + REGION_EJECUTION +
-    AWARD_GROWTH_ORIG_ENTITY_ALL_TIME + AWARD_GROWTH_ORIG_CONT_ALL_TIME +
-    PROJECT_INTENSITY_NORM_ENTITY_ALL_TIME + PROJECT_INTENSITY_NORM_CONT_ALL_TIME +
-    NUM_PENALTIES_ENTIDAD +
-    FINAL_DEADLINE,
-  data = datos_vr2
+# Calcular total de variables (sin incluir intercepto) modelo 1
+length(coef(modelo_completo_time_todas)) - 1
+
+# Calcular total de variables (sin incluir intercepto) modelo 2
+length(coef(modelo_deviation_time_2)) - 1
+```
+
+```{r}
+# Calcular AIC y BIC de Modelo 1
+aic_modelo1 <- AIC(modelo_completo_time_todas)
+bic_modelo1 <- BIC(modelo_completo_time_todas)
+
+# Calcular AIC y BIC de Modelo 2
+aic_modelo2 <- AIC(modelo_deviation_time_2)
+bic_modelo2 <- BIC(modelo_deviation_time_2)
+
+# Mostrar tabla comparativa
+comparacion_modelos <- data.frame(
+  Modelo = c("Modelo 1 (Completo)", "Modelo 2"),
+  AIC = c(aic_modelo1, aic_modelo2),
+  BIC = c(bic_modelo1, bic_modelo2)
 )
 
-# Resumen del modelo depurado
-summary(modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA_2)
-
-```
-```{r}
-car::vif(modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA_2)
-```
-```{r}
-# Ya no hay ninguna variable VIF > 10 según la columna de GVIF(1/(2*df)
-anova(modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA, modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA_2)
+print(comparacion_modelos)
 
 ```
 
 
-Al comparar ambos modelos mediante ANOVA, se observa un p-valor de 0.005843, indicando que el modelo completo (Modelo 1) es significativamente mejor que el modelo reducido (Modelo 2) al nivel de significancia del 5%. Esto implica que, aunque las variables eliminadas presentan problemas de multicolinealidad alta, su eliminación genera una pérdida importante de ajuste del modelo, evidenciada en el incremento significativo de la suma de residuos en el modelo reducido.
-
-Ya que la prueba ANOVA nos permitió identificar que el modelo full, es mejor de acuerdo al p-value generado, se tomo la decisión de eliminar las variables que tuvieran un p-value mayor a 0.30.
-
+El mejor modelo fue el completo, por lo cual vamos a 
+realizar ánalisis de valores atípicos
 ```{r}
-modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA_3 <- lm(
-  formula = TIME_DEVIATION ~ 
-    HAVE_DEVIATION +
-    PROJECT_INTENSITY_ORIG_LOG + PROJECT_INTENSITY_NORM_LOG +
-    PROJECT_INTENSITY_LOG_CONT_ALL_TIME +
-    CONTRACT_VALUE_LOGNORM +
-    AWARD_GROWTH + CONTRACT_VALUE_ORIG + CONTRACT_VALUE_NORM +
-    PROJECT_INTENSITY_NORM +
-    PROJECT_INTENSITY_NORM_CONT_ALL_TIME +
-    FINAL_DEADLINE,
-  data = datos_completos_ampliada
+# Calcular la distancia de Cook
+distancia_cook <- cooks.distance(modelo_completo_time_todas)
+
+# Revisar resumen de las distancias de Cook
+summary(distancia_cook)
+
+# Opcional: Identificar observaciones con distancia de Cook alta (regla práctica: valores > 4/n)
+umbral_cook <- 4 / nrow(datos_vr2)
+observaciones_influyentes <- which(distancia_cook > umbral_cook)
+
+# Ver cuántas y cuáles observaciones son influyentes
+length(observaciones_influyentes)
+observaciones_influyentes
+
+# Opcional: Gráfico de distancias de Cook
+plot(distancia_cook, type = "h", main = "Distancia de Cook", ylab = "Distancia", xlab = "Observación")
+abline(h = umbral_cook, col = "red", lty = 2)
+
+```
+Hay observaciones quese logran evidenciar bien, cuales son sus números correspondientes, por tal razón, se realizó otro gráfico.
+```{r}
+
+# Calcular distancia de Cook
+distancia_cook <- cooks.distance(modelo_completo_time_todas)
+
+# Crear dataframe con observaciones
+df_cook <- data.frame(
+  observacion = 1:length(distancia_cook),
+  distancia = distancia_cook
 )
 
-# Resumen del modelo depurado 3
-summary(modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA_3)
-
+# Gráfico con ggplot2
+ggplot(df_cook, aes(x = observacion, y = distancia)) +
+  geom_point(color = "blue") +
+  geom_hline(yintercept = 4 / nrow(datos_vr2), color = "red", linetype = "dashed") +
+  geom_text(data = subset(df_cook, distancia > 4 / nrow(datos_vr2)),
+            aes(label = observacion),
+            vjust = -0.5, size = 3, color = "red") +
+  labs(title = "Distancia de Cook (Visualización nueva)",
+       x = "Observación", y = "Distancia de Cook") +
+  theme_minimal()
 ```
-```{r}
-anova(modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA, modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA_3)
-```
-
-La comparación mediante ANOVA muestra que no hay diferencias significativas entre el modelo completo y el modelo depurado (p = 0.6339), por lo que se recomienda preferir el modelo reducido por su mayor simplicidad.
-
-Graficaremos los residuos del modelo 3 
-```{r}
-# Guardar valores ajustados y residuos del modelo 3
-ajustados <- modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA_3$fitted.values
-residuos <- modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA_3$residuals
-
-# Gráfico de residuos vs valores ajustados con estilo personalizado
-plot(
-  ajustados,
-  residuos,
-  xlab = "Valores ajustados",
-  ylab = "Residuos",
-  main = "Residuos vs Valores Ajustados para modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA_3",
-  pch = 20,
-  col = "blue"
-)
-abline(h = 0, col = "red", lwd = 2)
-
-```
-
-# Análisis de multicolinealidad con VIF
-```{r}
-car::vif(modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA_3)
-```
-
-Siguiendo una estrategia progresiva de depuración, se realizó una evaluación combinada de los VIF y p-valores de las variables en el modelo. En primer lugar, se identificó que la variable 
-CONTRACT_VALUE_ORIG presenta un VIF extremadamente alto de 49.17 y un p-valor de 0.914, lo que indica una fuerte colinealidad acompañada de una total falta de significancia estadística, justificando su eliminación inmediata. En segundo lugar, **CONTRACT_VALUE_NORM exhibe un VIF de 52.67 con un p-valor de 0.464, situación similar que también justifica su exclusión. En contraste, variables como PROJECT_INTENSITY_ORIG_LOG, aunque presentan un VIF muy alto de 106.85, muestran un p-valor de 0.076, sugiriendo una tendencia a ser significativa al 10%, por lo que se conservará por ahora y se reevaluara su permanencia después de la eliminación de las variables más problemáticas. Finalmente, aunque PROJECT_INTENSITY_NORM_LOG presenta el VIF más alto (178.49), se mantiene en el modelo debido a su alta significancia (p = 0.004), evitando eliminar variables que aportan explicaciones significativas al modelo.
+Como se observa en la gráfica se eliminaran las observaciones
+3,5,6,29,39,42 y 47
 
 ```{r}
-# Modelo 4: Eliminando solo CONTRACT_VALUE_ORIG
-modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA_4 <- lm(
-  formula = TIME_DEVIATION ~ 
-    HAVE_DEVIATION +
-    PROJECT_INTENSITY_ORIG_LOG + PROJECT_INTENSITY_NORM_LOG +
-    PROJECT_INTENSITY_LOG_CONT_ALL_TIME +
-    CONTRACT_VALUE_LOGNORM +
-    AWARD_GROWTH +
-    CONTRACT_VALUE_NORM +
-    PROJECT_INTENSITY_NORM +
-    PROJECT_INTENSITY_NORM_CONT_ALL_TIME +
-    FINAL_DEADLINE,
-  data = datos_completos_ampliada
+# Eliminar las observaciones específicas
+datos_sin_influyentes <- datos_vr2[-c(3, 5, 6, 29, 39, 42, 47), ]
+
+# Ajustar el modelo nuevamente sin las observaciones influyentes
+modelo_sin_influyentes <- lm(
+  formula = TIME_DEVIATION ~ .,
+  data = datos_sin_influyentes
 )
 
-# Resumen del modelo 4
-summary(modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA_4)
+# Resumen del modelo
+summary(modelo_sin_influyentes)
 
-# VIF del modelo 4
-car::vif(modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA_4)
 
 ```
 ```{r}
-# Guardar valores ajustados y residuos del modelo 4
-ajustados <- modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA_4$fitted.values
-residuos <- modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA_4$residuals
-
-# Gráfico de residuos vs valores ajustados con estilo personalizado
-plot(
-  ajustados,
-  residuos,
-  xlab = "Valores ajustados",
-  ylab = "Residuos",
-  main = "Residuos vs Valores Ajustados para modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA_4",
-  pch = 20,
-  col = "blue"
-)
-abline(h = 0, col = "red", lwd = 2)
+anova(modelo_completo_time_todas, modelo_sin_influyentes)
 ```
-```{r}
-modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA_5 <- lm(
-  formula = TIME_DEVIATION ~ 
-    HAVE_DEVIATION +
-    PROJECT_INTENSITY_ORIG_LOG + PROJECT_INTENSITY_NORM_LOG +
-    CONTRACT_VALUE_LOGNORM +
-    AWARD_GROWTH +
-    CONTRACT_VALUE_NORM +
-    PROJECT_INTENSITY_NORM +
-    FINAL_DEADLINE,
-  data = datos_completos_ampliada
-)
-
-# Resumen del modelo 5
-summary(modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA_5)
-
-# VIF del modelo 5
-car::vif(modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA_5)
-```
+Como se logra observar, no se puede usar anova porque el dataset no tiene la misma cantidad de datos
 
 ```{r}
-# Guardar valores ajustados y residuos del modelo 5
-ajustados <- modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA_5$fitted.values
-residuos <- modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA_5$residuals
-
-# Gráfico de residuos vs valores ajustados con estilo personalizado
-plot(
-  ajustados,
-  residuos,
-  xlab = "Valores ajustados",
-  ylab = "Residuos",
-  main = "Residuos vs Valores Ajustados para modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA_5",
-  pch = 20,
-  col = "blue"
-)
-abline(h = 0, col = "red", lwd = 2)
-```
-
-```{r}
-# Calcular residuos del modelo 5
-residuos_modelo_5 <- residuals(modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA_5)
-
-# Aplicar prueba de Shapiro-Wilk
-shapiro.test(residuos_modelo_5)
-
-```
-#La prueba de Shapiro-Wilk aplicada a los residuos del modelo 5 arrojó un p-valor de 1.81e-05, lo que indica que se rechaza la hipótesis nula de normalidad, sugiriendo que los residuos no siguen una distribución normal, por lo que sería chevere hacer transformaciones en la variable respuesta o revisar la presencia de valores atípicos.
-```{r}
-# Gráfico de Cook's distance
-plot(
-  modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA_5,
-  which = 4,
-  main = "Distancia de Cook - Modelo 5"
-)
-
-# Gráfico de Residuos estandarizados vs Leverage
-plot(
-  modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA_5,
-  which = 5,
-  main = "Residuos Estandarizados vs Leverage - Modelo 5"
-)
-
-```
-
-### Se observa que hay valores atípicos los cuales son los datos 42,29 y 30 lo que puede generar que nos dañen nuestra regresión, que la corran.
-## Por lo cual se eliminarán.
-```{r}
-datos_sin_outliers <- datos_completos_ampliada[-c(29, 30, 42), ]
-
-# Ajustar el modelo 5 sin outliers identificados
-modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA_5_sin_outliers <- lm(
-  formula = TIME_DEVIATION ~ 
-    HAVE_DEVIATION +
-    PROJECT_INTENSITY_ORIG_LOG + PROJECT_INTENSITY_NORM_LOG +
-    CONTRACT_VALUE_LOGNORM +
-    AWARD_GROWTH +
-    CONTRACT_VALUE_NORM +
-    PROJECT_INTENSITY_NORM +
-    FINAL_DEADLINE,
-  data = datos_sin_outliers
-)
-
-# Resumen del modelo sin outliers
-summary(modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA_5_sin_outliers)
-
-# VIF del modelo sin outliers
-car::vif(modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA_5_sin_outliers)
-
-# Prueba de Shapiro-Wilk para residuos del modelo sin outliers
-shapiro.test(residuals(modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA_5_sin_outliers))
-
-```
-
-#Tras comparar los dos modelos, se observa que al eliminar las observaciones atípicas, el R² ajustado mejoró significativamente de 0.7576 a 0.8462, indicando un mayor poder explicativo del modelo depurado. Además, el error estándar residual se redujo de 0.2001 a 0.08599, mostrando un ajuste más preciso. Igualmente, las variables ganaron mayor significancia estadística, evidenciando que la presencia de outliers estaba distorsionando tanto la normalidad de residuos como la estabilidad del modelo.
-#Se tomo la decisión de comparar AIC y BIC
-```{r}
-# AIC y BIC para el modelo con outliers (modelo 5)
-AIC(modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA_5)
-BIC(modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA_5)
-
-# AIC y BIC para el modelo sin outliers
-AIC(modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA_5_sin_outliers)
-BIC(modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA_5_sin_outliers)
-```
-# La comparación mediante AIC y BIC confirma que el modelo sin outliers es mejor, al presentar valores mucho menores (AIC: -95.43 vs -10.38 y BIC: -76.11 vs 9.50), lo que respalda que la depuración mejoró el ajuste.
-
-####
-
-```{r}
+library(ISLR)
+library(leaps)
 library(MASS)
-boxcox(modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA_5_sin_outliers)
+library(caret)
+library(haven)
 ```
 
-### Se presento el error porque la variable Y de TIME_DESVIATION debe ser estrictamente positiva, por eso vamos a
-# ver el summary para verlo.
- 
 ```{r}
-summary(datos_sin_outliers$TIME_DEVIATION)
+set.seed(73)
 
+library(caret)
+library(glmnet)
 
-```
-# La variable Y tiene muchos ceros.
-#####################
-############## 
-```{r}
-# Modelo con transformación logaritmica +1
-modelo_log <- lm(
-  formula = log(TIME_DEVIATION + 1) ~ 
-    HAVE_DEVIATION +
-    PROJECT_INTENSITY_ORIG_LOG + PROJECT_INTENSITY_NORM_LOG +
-    CONTRACT_VALUE_LOGNORM +
-    AWARD_GROWTH +
-    CONTRACT_VALUE_NORM +
-    PROJECT_INTENSITY_NORM +
-    FINAL_DEADLINE,
-  data = datos_sin_outliers
+# Control 10-fold cross validation
+ctrl <- trainControl(method = "cv", number = 10)
+
+# Ajuste con caret usando Lasso (alpha fijo en 1), sin tuneLength
+mod_lasso_caret <- train(
+  TIME_DEVIATION ~ .,
+  data = datos_vr2,
+  method = "glmnet",
+  trControl = ctrl,
+  tuneGrid = expand.grid(
+    alpha = 1,
+    lambda = seq(0.0001, 0.1, length = 50)  # Menos lambdas para evitar sobrecargar
+  ),
+  preProcess = c("center", "scale")  # Muy importante para glmnet
 )
 
-# Gráficos de diagnóstico
-par(mfrow = c(2, 2))
-plot(modelo_log)
+# Ver resumen del modelo Lasso
+mod_lasso_caret
+
+# Gráfico de trayectoria de coeficientes
+plot(mod_lasso_caret$finalModel, "lambda")
+
+# Ver mejor lambda
+mod_lasso_caret$bestTune
+
+
 
 ```
+
+```{r}
+# Extraer coeficientes del modelo Lasso con el lambda óptimo
+lasso_coefs <- coef(mod_lasso_caret$finalModel, s = mod_lasso_caret$bestTune$lambda)
+
+# Convertir a data frame y filtrar los que no son cero
+lasso_df <- as.data.frame(as.matrix(lasso_coefs))
+names(lasso_df) <- "coef"
+lasso_df$variable <- rownames(lasso_df)
+lasso_df
+sum(abs(lasso_df$coef) > 0)
+```
+
+```{r}
+pred_lasso <- predict(mod_lasso_caret, datos_vr2)
+R2_lasso <- R2(pred_lasso, datos_vr2$TIME_DEVIATION)
+print(R2_lasso)
+RMSE_lasso <- RMSE(pred_lasso, datos_vr2$TIME_DEVIATION)
+print(RMSE_lasso)
+
+```
+
 
