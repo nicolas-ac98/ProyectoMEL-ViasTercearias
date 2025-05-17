@@ -23,8 +23,7 @@ summary(datos_vr)
 #En primer lugar se logra concluir que en total hay 2118 proyectos de vías rurales.
 # Y que en la base de datos hay un total de 72 variables.
 # A continuación, se realizará un ánalisis de datos para descartar variables y luego comenzar a realizar modelos de regresión. 
-install.packages("ggplot2", dependencies = TRUE, type = "binary")
-library(ggplot2)
+# install.packages("ggplot2", dependencies = TRUE, type = "binary")
 library(tidyverse)
 
 library(corrplot)
@@ -33,6 +32,7 @@ library(GGally)
 
 library(psych)
 ```
+
 
 ```{r}
 # Se va analizar que tipos de datos hay en la base datos 
@@ -455,6 +455,7 @@ eliminar_na <- function(data) {
 }
 datos_vr <- eliminar_na(datos_vr)
 
+```
 
 ```{r}
 obtener_cuantias <- function(base_completa) {
@@ -886,46 +887,59 @@ shapiro.test(residuos)
 ```
  ###Análisis por factores
 ```{r}
-# Paso 1: Definir función log segura (si no está cargada aún)
+# Paso 1: Definir función log segura
 log_transform_safe <- function(x) {
   ifelse(x > 0, log(x), NA)
 }
 
-# Paso 2: Crear o verificar variables transformadas con nombres claros y coherentes
-datos_vr$PROJECT_INTENSITY_ORIG_LOG <- log_transform_safe(datos_vr$PROJECT_INTENSITY_ORIG)
-datos_vr$PROJECT_INTENSITY_NORM_LOG <- log_transform_safe(datos_vr$PROJECT_INTENSITY_NORM)
-datos_vr$PROJECT_INTENSITY_LOG_ENTITY_ALL_TIME <- log_transform_safe(datos_vr$PROJECT_INTENSITY_NORM_ENTITY_ALL_TIME)
-datos_vr$PROJECT_INTENSITY_LOG_CONT_ALL_TIME <- log_transform_safe(datos_vr$PROJECT_INTENSITY_NORM_CONT_ALL_TIME)
-datos_vr$CONTRACT_VALUE_LOGNORM <- log_transform_safe(datos_vr$CONTRACT_VALUE_NORM)
+# Paso 2: Crear copia de la base original
+datos_vr2 <- datos_vr
 
-# Paso 3: Crear vector completo de variables originales + transformadas
-variables_usadas_ampliadas_2 <- c(
-  # Variables dependientes o de análisis central
-  "COST_DEVIATION", "TIME_DEVIATION",
-  
-  # Variables transformadas (log)
-  "PROJECT_INTENSITY_NORM_LOG",
+# Paso 3: Crear columnas transformadas directamente en datos_vr2
+datos_vr2$PROJECT_INTENSITY_ORIG_LOG <- log_transform_safe(datos_vr2$PROJECT_INTENSITY_ORIG)
+datos_vr2$PROJECT_INTENSITY_NORM_LOG <- log_transform_safe(datos_vr2$PROJECT_INTENSITY_NORM)
+datos_vr2$PROJECT_INTENSITY_LOG_ENTITY_ALL_TIME <- log_transform_safe(datos_vr2$PROJECT_INTENSITY_NORM_ENTITY_ALL_TIME)
+datos_vr2$PROJECT_INTENSITY_LOG_CONT_ALL_TIME <- log_transform_safe(datos_vr2$PROJECT_INTENSITY_NORM_CONT_ALL_TIME)
+datos_vr2$CONTRACT_VALUE_LOGNORM <- log_transform_safe(datos_vr2$CONTRACT_VALUE_NORM)
+
+# Paso 4: Crear vector completo de variables a seleccionar (transformadas + originales)
+variables_completas_vr2 <- c(
+  # "COST_DEVIATION", 
+  "TIME_DEVIATION", "PROJECT_INTENSITY_NORM_LOG",
   "PROJECT_INTENSITY_LOG_ENTITY_ALL_TIME", "PROJECT_INTENSITY_LOG_CONT_ALL_TIME",
   "CONTRACT_VALUE_LOGNORM",
-  
-  # Variables originales
-  "AWARD_GROWTH", "CONTRACT_VALUE_ORIG", 
-  "REGION_EJECUTION",
+  "AWARD_GROWTH", "CONTRACT_VALUE_NORM",
+  "REGION_EJECUTION","MUNICIPALITY_TYPE",
   "AWARD_GROWTH_ORIG_ENTITY_ALL_TIME", "AWARD_GROWTH_ORIG_CONT_ALL_TIME",
   "PROJECT_INTENSITY_NORM_ENTITY_ALL_TIME", "PROJECT_INTENSITY_NORM_CONT_ALL_TIME",
-  "NUM_PENALTIES_ENTIDAD", "TOTAL_CONTRACTS_OBRAS_ENTITY_LOG", "PROPORTION_DEVIATION_ENTITY_ALL_TIME"
-  , "TOTAL_CONTRACTS_OBRAS_CONT", "PROPORTION_DEVIATION_CONT_ALL_TIME", "PROCESS_TYPE", "ORIGINAL_DEADLINE"
+  "NUM_PENALTIES_ENTIDAD", "TOTAL_CONTRACTS_OBRAS_ENTITY", "PROPORTION_DEVIATION_ENTITY_ALL_TIME",
+  "TOTAL_CONTRACTS_OBRAS_CONT", "PROPORTION_DEVIATION_CONT_ALL_TIME", "PROCESS_TYPE", "ORIGINAL_DEADLINE"
 )
+
+# Paso 5: Validación opcional (buena práctica)
+variables_inexistentes <- setdiff(variables_completas_vr2, names(datos_vr2))
+
+# Paso 6: Filtrar datos completos sin NA solo con las variables seleccionadas
+library(dplyr)
+
+datos_vr2 <- datos_vr2 %>%
+  select(all_of(variables_completas_vr2)) %>%
+  drop_na()
+
+# Paso 7: Vista previa rápida
+head(datos_vr2)
 
 ```
 
 
 
 ```{r}
-datos_completos_ampliada$REGION_EJECUTION <- as.factor(datos_completos_ampliada$REGION_EJECUTION)
-levels(datos_completos_ampliada$REGION_EJECUTION)
-datos_completos_ampliada$
-levels(datos_completos_ampliada$PROCESS_TYPE)
+datos_vr2$REGION_EJECUTION <- as.factor(datos_vr2$REGION_EJECUTION)
+levels(datos_vr2$REGION_EJECUTION)
+datos_vr2$PROCESS_TYPE <- as.factor(datos_vr2$PROCESS_TYPE)
+levels(datos_vr2$PROCESS_TYPE)
+datos_vr2$MUNICIPALITY_TYPE <- as.factor(datos_vr2$MUNICIPALITY_TYPE)
+levels(datos_vr2$MUNICIPALITY_TYPE)
 ```
  
 
@@ -933,16 +947,8 @@ levels(datos_completos_ampliada$PROCESS_TYPE)
 ```{r}
 # Crear el modelo de regresión lineal completo usando TIME_DEVIATION como Y
 modelo_completo_time_todas <- lm(
-  formula = TIME_DEVIATION ~ 
-    PROJECT_INTENSITY_NORM_LOG +
-    PROJECT_INTENSITY_LOG_ENTITY_ALL_TIME + PROJECT_INTENSITY_LOG_CONT_ALL_TIME +
-    CONTRACT_VALUE_LOGNORM +
-    AWARD_GROWTH + REGION_EJECUTION +
-    AWARD_GROWTH_ORIG_ENTITY_ALL_TIME + AWARD_GROWTH_ORIG_CONT_ALL_TIME +
-    PROJECT_INTENSITY_NORM_ENTITY_ALL_TIME + PROJECT_INTENSITY_NORM_CONT_ALL_TIME +
-    NUM_PENALTIES_ENTIDAD +
-    FINAL_DEADLINE,
-  data = datos_completos_ampliada
+  formula = TIME_DEVIATION ~ .,
+  data = datos_vr2
 )
 
 summary(modelo_completo_time_todas)
@@ -951,24 +957,27 @@ summary(modelo_completo_time_todas)
 ```
 
 ```{r}
-vif(modelo_completo_time_todas)
+library(car)
+vif_variables <- vif(modelo_completo_time_todas)
+vif_variables
+```
+```{r}
+vif_variables <- data.frame(vif_variables)
+colnames(vif_variables) <- c('GVIF', 'Df', 'GVIFC')
+vif_variables <- vif_variables[vif_variables$GVIFC <= 5,]
+```
+
+```{r}
+new_variables <- cat(paste(rownames(vif_variables), collapse = " + "))
+print(new_variables)
 ```
 
 
 ```{r}
+
 modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA <- lm(
-  formula = TIME_DEVIATION ~ 
-    HAVE_DEVIATION +
-    PROJECT_INTENSITY_ORIG_LOG + PROJECT_INTENSITY_NORM_LOG +
-    PROJECT_INTENSITY_LOG_ENTITY_ALL_TIME + PROJECT_INTENSITY_LOG_CONT_ALL_TIME +
-    CONTRACT_VALUE_LOGNORM +
-    AWARD_GROWTH + CONTRACT_VALUE_ORIG + CONTRACT_VALUE_NORM +
-    PROJECT_INTENSITY_NORM + REGION_EJECUTION +
-    AWARD_GROWTH_ORIG_ENTITY_ALL_TIME + AWARD_GROWTH_ORIG_CONT_ALL_TIME +
-    PROJECT_INTENSITY_NORM_ENTITY_ALL_TIME + PROJECT_INTENSITY_NORM_CONT_ALL_TIME +
-    NUM_PENALTIES_ENTIDAD +
-    FINAL_DEADLINE,
-  data = datos_completos_ampliada
+  formula = TIME_DEVIATION ~  PROJECT_INTENSITY_LOG_CONT_ALL_TIME + AWARD_GROWTH + CONTRACT_VALUE_NORM + REGION_EJECUTION + MUNICIPALITY_TYPE + AWARD_GROWTH_ORIG_ENTITY_ALL_TIME + AWARD_GROWTH_ORIG_CONT_ALL_TIME + PROJECT_INTENSITY_NORM_CONT_ALL_TIME + NUM_PENALTIES_ENTIDAD + TOTAL_CONTRACTS_OBRAS_ENTITY + PROPORTION_DEVIATION_ENTITY_ALL_TIME + TOTAL_CONTRACTS_OBRAS_CONT + PROPORTION_DEVIATION_CONT_ALL_TIME + PROCESS_TYPE + ORIGINAL_DEADLINE,
+  data = datos_vr2
 )
 
 # Resumen del modelo depurado
@@ -999,6 +1008,11 @@ abline(h = 0, col = "red", lwd = 2)
 
 ```
 
+```{r}
+anova(modelo_completo_time_todas, modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA)
+```
+
+
 
 ```{r}
 car::vif(modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA)
@@ -1015,7 +1029,7 @@ modelo_deviation_time_2_SINMULTICOLINEALIDAD_PERFECTA_2 <- lm(
     PROJECT_INTENSITY_NORM_ENTITY_ALL_TIME + PROJECT_INTENSITY_NORM_CONT_ALL_TIME +
     NUM_PENALTIES_ENTIDAD +
     FINAL_DEADLINE,
-  data = datos_completos_ampliada
+  data = datos_vr2
 )
 
 # Resumen del modelo depurado
