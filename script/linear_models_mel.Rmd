@@ -964,7 +964,7 @@ vif_variables
 ```{r}
 vif_variables <- data.frame(vif_variables)
 colnames(vif_variables) <- c('GVIF', 'Df', 'GVIFC')
-vif_variables <- vif_variables[vif_variables$GVIFC <= 5,]
+vif_variables <- vif_variables[vif_variables$GVIFC < 5,]
 ```
 
 ```{r}
