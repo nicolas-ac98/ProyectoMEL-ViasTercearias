@@ -893,7 +893,7 @@ log_transform_safe <- function(x) {
 }
 
 # Paso 2: Crear copia de la base original
-datos_vr2 <- datos_vr
+datos_vr2 <- copy(datos_vr)
 
 # Paso 3: Crear columnas transformadas directamente en datos_vr2
 datos_vr2$PROJECT_INTENSITY_ORIG_LOG <- log_transform_safe(datos_vr2$PROJECT_INTENSITY_ORIG)
@@ -1171,5 +1171,10 @@ RMSE_lasso <- RMSE(pred_lasso, datos_vr2$TIME_DEVIATION)
 print(RMSE_lasso)
 
 ```
+
+
+
+
+
 
 
